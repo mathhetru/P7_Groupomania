@@ -1,9 +1,8 @@
 <template>
-    <CreatePost v-show="publication"/>
-    <div class="main-create-post" aria-label="Créer une publication">
-        <a href="#" class="main-create-post-photoprofil">
+    <div class="main-create-post">
+        <RouterLink to="/profil" class="main-create-post-photoprofil">
             <img src="../assets/photoprofil.jpg" alt="photo-profil" class="main-create-post-photoprofil__img"/>
-        </a>
+        </RouterLink>
         <button class="main-create-post-btn" @click="createPublication">
             <p class="main-create-post-btn__title">Créer une publication...</p>
         </button>
@@ -11,25 +10,9 @@
 </template>
 
 <script>
-import CreatePost from '../components/CreatePost.vue';
-
+import { RouterLink } from "vue-router";
 export default {
-    name: 'Feed',
-    data() {
-        return {
-            publication : false,
-        }
-    },
-    components: { CreatePost },
-    methods: {
-        createPublication() {
-            if (!this.publication) {
-                this.publication = true;
-            } else {
-                this.publication = false;
-            }
-        },
-    }
+    name: 'Publication',
 }
 </script>
 

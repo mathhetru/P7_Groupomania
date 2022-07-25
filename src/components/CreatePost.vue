@@ -113,9 +113,7 @@ export default {
     background-color: #4E5166;
     color: white;
     transition: 0.2s linear;
-}
-
-.create-post-middle-btn__title{
+}.create-post-middle-btn__title{
     font-size: 0.8rem;
 }
 .create-post-bottom-btn{
