@@ -1,5 +1,5 @@
 <template>
-    <div class="create-post">
+    <div class="create-post" >
         <div class="create-post-window">
             <div class="create-post-top">
                 <p class="create-post-top__title">Créer une publication</p>

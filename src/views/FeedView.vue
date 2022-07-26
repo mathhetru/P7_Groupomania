@@ -2,14 +2,12 @@
 import HeaderLogged from '../components/HeaderLogged.vue';
 import Feed from '../components/Feed.vue';
 import Publication from '../components/Publication.vue';
-import CreatePost from '../components/CreatePost.vue';
 </script>
 
 <template>
     <header id="header">
         <HeaderLogged/> 
     </header>
-
     <span class="header-line"></span>
     <main id="main">
         <Feed/>

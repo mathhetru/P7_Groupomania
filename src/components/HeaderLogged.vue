@@ -1,6 +1,8 @@
 <template>
     <div class="headerLogged-logo-form">
-        <img src="../assets/Groupomania-logo.svg" alt="Groupomania-logo" class="header__logo"/>
+        <RouterLink to="/feed">
+            <img src="../assets/Groupomania-logo.svg" alt="Groupomania-logo" class="header__logo"/>
+        </RouterLink>
         <form method="get" action="ville.php" class="header-form">
             <fontAwesome icon="search" class="header-form__icon"/>
             <input type="text" name="search" placeholder="Rechercher sur l'intranet" class="header-form__input"/>

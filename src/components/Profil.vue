@@ -1,9 +1,9 @@
 <template>
-    <div class="modify">
+    <div class="modify" v-show="modification">
         <div class="modify-window">
             <div class="modify-top">
                 <p class="modify-top__title">Modifier votre profil</p>
-                <fontAwesome icon="close" @click="createPublication" class="modify-top__close"/>
+                <fontAwesome icon="close" @click="showModifyWindow" class="modify-top__close"/>
             </div>
             <span class="modify-line"></span>
             <div class="modify-middle" aria-label="Fenetre créer une publication">
@@ -16,7 +16,7 @@
             </div>
             <span class="modify-line"></span>
             <div class="modify-bottom">
-                <button type="submit" name="publication" id="publication" class="modify-bottom-btn">Publier</button>
+                <button type="submit" name="publication" id="publication" class="modify-bottom-btn">Modifier</button>
             </div>
         </div>
     </div>
@@ -29,7 +29,7 @@
                 <p class="about-info-name">Aurélien Dehaine</p>
                 <p class="about-info-poste">Technicien</p>
             </div>
-            <button class="about-modify-btn">Modifier</button>
+            <button @click="showModifyWindow" class="about-modify-btn">Modifier</button>
         </div>
         
     </div>
@@ -39,6 +39,20 @@
 <script>
 export default {
     name: 'Profil',
+    data() {
+        return {
+            modification : false,
+        }
+    },
+    methods: {
+        showModifyWindow() {
+            if (!this.modification) {
+                this.modification = true;
+            } else {
+                this.modification = false;
+            }
+        },
+    }
 }
 </script>
 
