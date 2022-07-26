@@ -1,25 +1,23 @@
 <script setup>
 import HeaderLogged from '../components/HeaderLogged.vue';
-import Feed from '../components/Feed.vue';
 import Publication from '../components/Publication.vue';
-import CreatePost from '../components/CreatePost.vue';
+import Profil from '../components/Profil.vue';
 </script>
 
 <template>
     <header id="header">
         <HeaderLogged/> 
     </header>
-
     <span class="header-line"></span>
     <main id="main">
-        <Feed/>
-        <Publication/>
+        <Profil />
         <Publication/>
     </main>
 </template>
 
 <style scoped>
 #header{
+    z-index:4;
     position: sticky;
     max-width: 1024px;
     margin: auto;
@@ -29,11 +27,8 @@ import CreatePost from '../components/CreatePost.vue';
     justify-content: space-between;
 }
 #main{
-    max-width: 1024px;
     margin: auto;
-    padding-top: 20px;
 }
-
 .header-line{
     display: block;
     background-color: #d1d2d6;

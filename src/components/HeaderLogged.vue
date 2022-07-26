@@ -57,7 +57,7 @@ export default {
 
 <style scoped>
 .header-menu{
-    z-index:2;
+    z-index:3;
     position: absolute;
     top:130px;
     right:30px;
