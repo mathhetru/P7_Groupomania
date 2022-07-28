@@ -1,5 +1,5 @@
 <template> 
-    <a href="#">
+    <a href="signup">
         <img src="../assets/Groupomania-logo.svg" alt="Groupomania-logo" class="header__logo"/>
     </a>
     <div class="header-nav">

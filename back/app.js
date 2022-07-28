@@ -1,24 +1,27 @@
 const express = require('express');
-const cors = require('cors');
-
+const mongoose = require("mongoose");
 const app = express();
+const cors = require('cors');
+const dotenv = require('dotenv'); 
+dotenv.config(); 
 
-app.use(cors());
+app.use(cors()); 
+app.use(express.json());
 
-app.use('/api/users', (req, res, next) => {
-    const users = [
-        {
-            _id: 'oeihfzeoi',
-            emailLogin: 'toto@chezmoi.com',
-            passwordLogin: 'test',
-        },
-        {
-            _id: 'gzertgyhzt',
-            emailLogin: 'truc@muche.com',
-            passwordLogin: 'test',
-        },
-    ];
-    res.status(200).json(users);
-});
+const userRoutes = require("./routes/user");
+
+const myAccount = process.env.account;
+const myMdp = process.env.mdp; 
+const myDatabase = process.env.database; 
+
+mongoose.connect(
+        `mongodb+srv://${myAccount}:${myMdp}@${myDatabase}.mongodb.net/?retryWrites=true&w=majority`,
+        { useNewUrlParser: true, useUnifiedTopology: true }
+    )
+    .then(() => console.log("Connexion à MongoDB réussie !"))
+    .catch(() => console.log("Connexion à MongoDB échouée !")); 
+
+
+app.use("/api/auth", userRoutes); 
 
 module.exports = app;

@@ -1,24 +1,16 @@
 <template>
     <div class="login">
         <div class="login-insert">
-            <p class="login-insert-msg">
-                Bienvenue
-            </p>
-            <p class="login-insert-msg p-greythin">
-                sur votre réseau social
-            </p>
-            <p class="login-insert-msg p-red">
-                Groupomania-intranet
-            </p>
+            <p class="login-insert-msg">Bienvenue</p>
+            <p class="login-insert-msg p-greythin">Sur votre réseau social</p>
+            <p class="login-insert-msg p-red">Groupomania-intranet</p>
             <img src="../assets/img-accueil.svg" alt="Groupomania-image-accueil" class="login-insert-img"/>
         </div> 
         <div class="login-container">
-            <form class="login-container-form" @submit="getLogin">
-                <p class="login-container__title">
-                    Groupomania
-                </p>
-                <input type="text" name="emailLogin" id="emailLogin" class="login-container__input" placeholder="Adresse e-mail" aria-label="Adresse email">
-                <input type="password" name="passwordLogin" id="passwordLogin" class="login-container__input" placeholder="Mot de passe" aria-label="Mot de passe">
+            <form class="login-container-form" @submit="logUser">
+                <p class="login-container__title">Groupomania</p>
+                <input type="text" v-model="emailLogin" name="emailLogin" id="emailLogin" class="login-container__input" placeholder="Adresse e-mail" aria-label="Adresse email">
+                <input type="password" v-model="passwordLogin" name="passwordLogin" id="passwordLogin" class="login-container__input" placeholder="Mot de passe" aria-label="Mot de passe">
                 <button type="submit" class="login-container__btn">Se connecter</button>
             </form>
             <p id="connectErrorMsg" class="login-container__errormsg"><!-- Adresse mail ou mot de passe incorrect.--></p>
@@ -31,18 +23,7 @@ import axios from "axios";
 import router from "../router";
 
 export default {
-    name: 'Login',/*
-    mounted: function(){
-        var string = window.location.href;
-        var url = new URL(string);
-        var connectMsg = document.querySelector('.login-container__btn');
-            
-        if (url.pathname == "/login") {
-            return connectMsg.innerHTML = 'Se connecter'
-        } else if (url.pathname == "/signup") {
-            return connectMsg.innerHTML = "S'inscrire"
-        } 
-    }*/
+    name: 'Login',
     data() {
         return {
             emailLogin: "",
@@ -50,18 +31,14 @@ export default {
         }
     },
     methods: {
-        getLogin() {
-            console.log(this.emailLogin)
-            var requestURL = "http://localhost:3000/api/users/"
-            axios.get(requestURL)
+        logUser() {
+            const emailLogin = this.emailLogin;
+            const passwordLogin = this.passwordLogin;
+            var requestURL = "http://localhost:3000/api/auth/login";
+            axios.get(requestURL, {email: emailLogin, password: passwordLogin})
             .then(function (response) {
-                for (var i = 0; i < response.data.length; i++){
-                    var User = response.data[i];
-                    console.table(this.emailLogin)
-                    if (this.emailLogin == User.emailLogin) (
-                    router.push("/feed"))
-                }
-            })
+                router.push("/feed")
+                })
             .catch(error => alert("Erreur : " + error));
         }
     }

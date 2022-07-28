@@ -13,13 +13,13 @@
             <img src="../assets/img-accueil.svg" alt="Groupomania-image-accueil" class="signup-insert-img"/>
         </div>
         <div class="signup-container">
-            <form class="signup-container-form">
+            <form class="signup-container-form" @submit="createUser">
                 <p class="signup-container__title">
                     Groupomania
                 </p>
-                <input type="text" name="email-signup" id="email-signup" class="signup-container__input" placeholder="Adresse e-mail" aria-label="Adresse email">
-                <input type="password" name="password-signup" id="password-signup" class="signup-container__input" placeholder="Mot de passe" aria-label="Mot de passe">
-                <button type="submit" name="signup" id="signup" class="signup-container__btn">S'inscrire</button>
+                <input type="text" v-model="emailSignup" name="emailSignup" class="signup-container__input" placeholder="Adresse e-mail" aria-label="Adresse email">
+                <input type="password" v-model="passwordSignup" name="passwordSignup" class="signup-container__input" placeholder="Mot de passe" aria-label="Mot de passe">
+                <button type="submit" class="signup-container__btn">S'inscrire</button>
             </form>
             <p id="connectErrorMsg" class="signup-container__errormsg"><!-- Adresse mail ou mot de passe incorrect.--></p>
         </div>
@@ -27,19 +27,35 @@
 </template>
 
 <script>
+import axios from "axios";
+import router from "../router";
+
 export default {
     name: 'SignUp',
-    /*mounted: function(){
-        var string = window.location.href;
-        var url = new URL(string);
-        var connectMsg = document.querySelector('.signup-container__btn');
-            
-        if (url.pathname == "/login") {
-            return connectMsg.innerHTML = 'Se connecter'
-        } else if (url.pathname == "/signup") {
-            return connectMsg.innerHTML = "S'inscrire"
-        } 
-    }*/
+    data() {
+        return {
+            emailSignup: "",
+            passwordSignup: "",
+        }
+    },
+    methods: {
+        async createUser() {
+            try {
+            const emailSignup = this.emailSignup;
+            const passwordSignup = this.passwordSignup;
+            await axios.post('http://localhost:3000/api/auth/signup', { email: emailSignup, password: passwordSignup })
+            .then(function (response) {
+                localStorage.setItem("userId", response.data.userId);
+                router.push('/feed');
+                console.log('titi');
+            })
+            .catch(error => alert("Erreur : " + error));
+            } catch (error) {
+                console.log(error)
+            }
+
+        }
+    }
 }
 </script>
 
