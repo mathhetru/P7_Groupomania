@@ -167,7 +167,7 @@ export default {
     justify-content: space-between;
 }
 .post-comment-insertgrey{
-    border-radius: 10px;
+    border-radius: 3px 10px 10px 10px;
     width: 82%;
     padding: 10px;
     background-color: #d1d2d6;

@@ -19,9 +19,11 @@
                 </p>
                 <input type="text" v-model="emailSignup" name="emailSignup" class="signup-container__input" placeholder="Adresse e-mail" aria-label="Adresse email">
                 <input type="password" v-model="passwordSignup" name="passwordSignup" class="signup-container__input" placeholder="Mot de passe" aria-label="Mot de passe">
+                <input type="text" v-model="nameSignup" class="signup-container__input"
+                placeholder="Nom et prénom" aria-label="Nom et prénom">
+                <input type="text" v-model="roleSignup" class="signup-container__input" placeholder="Votre rôle chez Groupomania" aria-label="Nom et prénom">
                 <button type="submit" class="signup-container__btn">S'inscrire</button>
             </form>
-            <p id="connectErrorMsg" class="signup-container__errormsg"><!-- Adresse mail ou mot de passe incorrect.--></p>
         </div>
     </div> 
 </template>
@@ -34,11 +36,23 @@ export default {
     name: 'SignUp',
     data() {
         return {
-            emailSignup: "",
-            passwordSignup: "",
+            emailSignup: null,
+            passwordSignup: null,
         }
     },
     methods: {
+        createUser(e) {
+            e.preventDefault();
+            const emailSignup = this.emailSignup;
+            const passwordSignup = this.passwordSignup;
+            axios.post('http://localhost:3000/api/auth/signup', { email: emailSignup, password: passwordSignup })
+                .then(function (response) {
+                localStorage.setItem("userId", response.data.userId);
+                router.push('/feed')})
+                .catch(error => alert("Erreur : " + error));
+        }
+    }
+    /* methods: {
         async createUser() {
             try {
             const emailSignup = this.emailSignup;
@@ -53,10 +67,24 @@ export default {
             } catch (error) {
                 console.log(error)
             }
-
         }
     }
+    mounted: 
+        function() {
+            const emailSignup = this.emailSignup;
+            const passwordSignup = this.passwordSignup;
+            axios
+            .post('http://localhost:3000/api/auth/signup', { email: emailSignup, password: passwordSignup })
+            .then(function (response) {
+                localStorage.setItem("userId", response.data.userId);
+                router.push('/feed');
+                console.log('titi');
+            })
+            .catch(error => alert("Erreur : " + error));
+        }*/
+    
 }
+
 </script>
 
 <style scoped>
@@ -93,7 +121,6 @@ export default {
     box-shadow: 1px 1px 10px #FD2D01;
     padding: 40px;
     border-radius: 20px;
-    height: 230px;
     margin-bottom: 70px;
     width: 25%;
 }
@@ -101,7 +128,7 @@ export default {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    height: 200px;
+    height: 320px;
 }
 .signup-container__title{
     color: #FD2D01;

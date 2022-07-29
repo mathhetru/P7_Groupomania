@@ -26,20 +26,21 @@ export default {
     name: 'Login',
     data() {
         return {
-            emailLogin: "",
-            passwordLogin: "",
+            emailLogin: null,
+            passwordLogin: null,
         }
     },
     methods: {
-        logUser() {
+        logUser(e) {
+            e.preventDefault();
             const emailLogin = this.emailLogin;
             const passwordLogin = this.passwordLogin;
-            var requestURL = "http://localhost:3000/api/auth/login";
-            axios.get(requestURL, {email: emailLogin, password: passwordLogin})
-            .then(function (response) {
-                router.push("/feed")
-                })
-            .catch(error => alert("Erreur : " + error));
+            axios.post("http://localhost:3000/api/auth/login", { email: emailLogin, password: passwordLogin })
+                .then(function (response) {
+                    console.log('titi');
+                    router.push("/feed");
+                    })
+                .catch(error => alert("Erreur : " + error));
         }
     }
 }
