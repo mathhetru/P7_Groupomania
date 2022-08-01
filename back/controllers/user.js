@@ -3,11 +3,20 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 exports.signup = (req, res, next) => {
-  bcrypt.hash(req.body.password, 10) 
-    .then(hash => { 
+  bcrypt.hash(req.body.password, 10)
+    .then(hash => {
+      var role = 'utilisateur';
+      if (req.body.email.includes("@admin")) {
+        role = 'administrateur';
+      }
       const signupUser = new User({
+        firstname: req.body.firstname,
+        lastname: req.body.lastname,
+        job: req.body.job,
         email: req.body.email,
-        password: hash 
+        password: hash,
+        role: role, 
+        avatar: `${req.protocol}://${req.get("host")}/images/avatar-groupomania.jpg`
       });
       signupUser.save() 
         .then(() => res.status(201).json({ 

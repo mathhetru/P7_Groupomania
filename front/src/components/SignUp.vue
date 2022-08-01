@@ -17,11 +17,26 @@
                 <p class="signup-container__title">
                     Groupomania
                 </p>
-                <input type="text" v-model="emailSignup" name="emailSignup" class="signup-container__input" placeholder="Adresse e-mail" aria-label="Adresse email">
-                <input type="password" v-model="passwordSignup" name="passwordSignup" class="signup-container__input" placeholder="Mot de passe" aria-label="Mot de passe">
-                <input type="text" v-model="nameSignup" class="signup-container__input"
-                placeholder="Nom et prénom" aria-label="Nom et prénom">
-                <input type="text" v-model="roleSignup" class="signup-container__input" placeholder="Votre rôle chez Groupomania" aria-label="Nom et prénom">
+                <div>
+                    <span id="connectErrorMsg" v-show="errorFirstName" class="signup-container__errormsg">Champ invalide, veuillez vérifier votre prénom.</span>
+                    <input type="text" v-model="firstNameSignup" class="signup-container__input" placeholder="Prénom" aria-label="Prénom">
+                </div>
+                <div>
+                    <span id="connectErrorMsg" v-show="errorLastName" class="signup-container__errormsg">Champ invalide, veuillez vérifier votre nom.</span>
+                    <input type="text" v-model="lastNameSignup" class="signup-container__input" placeholder="Nom" aria-label="Nom">
+                </div>
+                <div>
+                    <span id="connectErrorMsg" v-show="errorJob" class="signup-container__errormsg">Champ invalide, veuillez vérifier votre job dans l'entreprise.</span>
+                    <input type="text" v-model="jobSignup" class="signup-container__input" placeholder="Job chez Groupomania" aria-label="Job">
+                </div>
+                <div>
+                    <span id="connectErrorMsg" v-show="errorEmail" class="signup-container__errormsg">Champ invalide, veuillez vérifier votre email.</span>
+                    <input type="text" v-model="emailSignup" class="signup-container__input" placeholder="Adresse e-mail" aria-label="Adresse email">
+                </div>
+                <div>
+                    <span id="connectErrorMsg" v-show="errorPassword" class="signup-container__errormsg">Votre mot de passe doit contenir 8 caractères minimum.</span>
+                    <input type="password" v-model="passwordSignup" class="signup-container__input" placeholder="Mot de passe" aria-label="Mot de passe">
+                </div>
                 <button type="submit" class="signup-container__btn">S'inscrire</button>
             </form>
         </div>
@@ -36,19 +51,52 @@ export default {
     name: 'SignUp',
     data() {
         return {
-            emailSignup: null,
-            passwordSignup: null,
+            firstNameSignup: "",
+            lastNameSignup: "",
+            jobSignup: "", 
+            emailSignup: "",
+            passwordSignup: "",
+            errorFirstName: false,
+            errorLastName: false,
+            errorJob: false,
+            errorEmail: false,
+            errorPassword: false
         }
+
     },
     methods: {
         createUser(e) {
             e.preventDefault();
-            const emailSignup = this.emailSignup;
-            const passwordSignup = this.passwordSignup;
-            axios.post('http://localhost:3000/api/auth/signup', { email: emailSignup, password: passwordSignup })
+            var nameRegExp = new RegExp("^[A-zÀ-ú \-]+$");
+            var emailRegExp = new RegExp("^[a-zA-Z0-9_. -]+@[a-zA-Z.-]+[.]{1}[a-z]{2,10}$");
+
+            if (this.firstNameSignup === "" || this.lastNameSignup === "" || this.jobSignup === "" || this.emailSignup === "" || this.passwordSignup === "") {
+                alert("Vous devez remplir le formulaire pour vous inscrire !");
+                return;
+            } else {
+                this.errorFirstName = !nameRegExp.test(this.firstNameSignup);
+                this.errorLastName = !nameRegExp.test(this.lastNameSignup);
+                this.errorJob = !nameRegExp.test(this.jobSignup);
+                this.errorEmail = !emailRegExp.test(this.emailSignup);
+                this.errorPassword = !(this.passwordSignup.length >= 8);
+            };
+
+            if (this.errorFirstName || this.errorLastName || this.errorJob || this.errorEmail || this.errorPassword) {
+                // Un champ n'est pas bon
+                return;
+            }
+
+            console.log("toto");
+            axios.post('http://localhost:3000/api/auth/signup', { 
+                firstname: this.firstNameSignup,
+                lastname: this.lastNameSignup,
+                job: this.jobSignup,
+                email: this.emailSignup, 
+                password: this.passwordSignup })
                 .then(function (response) {
-                localStorage.setItem("userId", response.data.userId);
-                router.push('/feed')})
+                    console.log(response);
+                    router.push('feed')
+                })
                 .catch(error => alert("Erreur : " + error));
         }
     }
@@ -128,7 +176,7 @@ export default {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    height: 320px;
+    height: 380px;
 }
 .signup-container__title{
     color: #FD2D01;
@@ -137,10 +185,13 @@ export default {
     margin:0;
 }
 .signup-container__input{
-    padding: 10px;
+    width: 234px;
     font-weight: lighter;
     border-radius: 5px;
     border: 0.5px solid #FD2D01;
+}
+.signup-container__input[type="text"], .signup-container__input[type="password"]{
+    padding: 10px;
 }
 .signup-container__btn{
     cursor: pointer;
@@ -152,10 +203,9 @@ export default {
     border: none;
 }
 .signup-container__errormsg{
-    font-size: 0.9rem;
+    display: block;
+    font-size: 0.65rem;
     margin:0;
-    margin-top: 10px;
-    text-align: center;
 }
 
 @keyframes SlideDown {
