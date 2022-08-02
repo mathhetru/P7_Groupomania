@@ -9,8 +9,14 @@
         <div class="login-container">
             <form class="login-container-form" @submit="logUser">
                 <p class="login-container__title">Groupomania</p>
-                <input type="text" v-model="emailLogin" name="emailLogin" id="emailLogin" class="login-container__input" placeholder="Adresse e-mail" aria-label="Adresse email">
-                <input type="password" v-model="passwordLogin" name="passwordLogin" id="passwordLogin" class="login-container__input" placeholder="Mot de passe" aria-label="Mot de passe">
+                <div>
+                    <span id="connectErrorMsg" v-show="errorEmail" class="login-container__errormsg">Champ invalide, veuillez vérifier votre email.</span>
+                    <input type="text" v-model="emailLogin" name="emailLogin" id="emailLogin" class="login-container__input" placeholder="Adresse e-mail" aria-label="Adresse email">
+                </div>
+                <div>
+                    <span id="connectErrorMsg" v-show="errorPassword" class="login-container__errormsg">Paire mot de passe et adresse mail incorrecte.</span>
+                    <input type="password" v-model="passwordLogin" name="passwordLogin" id="passwordLogin" class="login-container__input" placeholder="Mot de passe" aria-label="Mot de passe">
+                </div>
                 <button type="submit" class="login-container__btn">Se connecter</button>
             </form>
             <p id="connectErrorMsg" class="login-container__errormsg"><!-- Adresse mail ou mot de passe incorrect.--></p>
@@ -26,19 +32,34 @@ export default {
     name: 'Login',
     data() {
         return {
-            emailLogin: null,
-            passwordLogin: null,
+            emailLogin: "",
+            passwordLogin: "",
+            errorEmail: false,
+            errorPassword: false
         }
     },
     methods: {
         logUser(e) {
             e.preventDefault();
-            const emailLogin = this.emailLogin;
-            const passwordLogin = this.passwordLogin;
-            axios.post("http://localhost:3000/api/auth/login", { email: emailLogin, password: passwordLogin })
+            var emailRegExp = new RegExp("^[a-zA-Z0-9_. -]+@[a-zA-Z.-]+[.]{1}[a-z]{2,10}$");
+
+            if (this.emailLogin === "" || this.passwordLogin === "") {
+                alert("Vous devez remplir le formulaire pour vous inscrire !");
+                return;
+            } else {
+                this.errorEmail = !emailRegExp.test(this.emailLogin);
+                this.errorPassword = !(this.passwordLogin.length >= 8);
+            };
+
+            if (this.errorEmail || this.errorPassword) {
+                // Un champ n'est pas bon
+                return;
+            }
+
+            axios.post("http://localhost:3000/api/auth/login", { email: this.emailLogin, password: this.passwordLogin })
                 .then(function (response) {
-                    console.log('titi');
-                    router.push("/feed");
+                    console.log(response);
+                    router.push("feed");
                     })
                 .catch(error => alert("Erreur : " + error));
         }
@@ -88,7 +109,7 @@ export default {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    height: 200px;
+    height: 210px;
 }
 .login-container__title{
     color: #FD2D01;
@@ -97,10 +118,13 @@ export default {
     margin:0;
 }
 .login-container__input{
-    padding: 10px;
+    width: 234px;
     font-weight: lighter;
     border-radius: 5px;
     border: 0.5px solid #FD2D01;
+}
+.login-container__input[type="text"], .login-container__input[type="password"]{
+    padding: 10px;
 }
 .login-container__btn{
     cursor: pointer;
@@ -112,10 +136,9 @@ export default {
     border: none;
 }
 .login-container__errormsg{
-    font-size: 0.9rem;
+    display: block;
+    font-size: 0.65rem;
     margin:0;
-    margin-top: 10px;
-    text-align: center;
 }
 
 @keyframes SlideDown {

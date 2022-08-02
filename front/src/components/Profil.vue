@@ -23,11 +23,11 @@
     <div class="banniere-grey">
         <div class="about">
             <div class="about-photo-profil">
-                <img src="../assets/photoprofil.jpg" alt="photo-profil" class="about-photo-profil__img">
+                <img src="../assets/avatar-groupomania.jpg" alt="photo-profil" class="about-photo-profil__img">
             </div>
             <div class="about-informations">
-                <p class="about-info-name">Aurélien Dehaine</p>
-                <p class="about-info-poste">Technicien</p>
+                <p class="about-info-name"><!--Aurélien Dehaine--></p>
+                <p class="about-info-poste"><!-- Technicien--></p>
             </div>
             <button @click="showModifyWindow" class="about-modify-btn">Modifier</button>
         </div>
@@ -179,8 +179,8 @@ export default {
     overflow: hidden;
 }
 .about-photo-profil__img{
-    height: 100%;
-    width: 100%;
+    height: 101%;
+    width: 101%;
     object-fit: cover;
 }
 .about-informations{
