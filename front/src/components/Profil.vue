@@ -6,18 +6,31 @@
                 <fontAwesome icon="close" @click="showModifyWindow" class="modify-top__close"/>
             </div>
             <span class="modify-line"></span>
-            <div class="modify-middle" aria-label="Fenetre créer une publication">
-                <input type="text" name="name" placeholder="Votre nom et prénom" class="modify-middle__input"/>
-                <input type="text" name="job" placeholder="Votre rôle dans l'entreprise" class="modify-middle__input"/>
-                <button aria-label="bouton ajouter une image" class="modify-middle-btn">
-                    <fontAwesome icon="camera" class="modify-middle-btn__icon"/>
-                    <p class="modify-middle-btn__title">Votre photo de profil</p>
-                </button>
-            </div>
-            <span class="modify-line"></span>
-            <div class="modify-bottom">
-                <button type="submit" id="modifyProfil" class="modify-bottom-btn">Modifier</button>
-            </div>
+            <form @submit="updateProfil">
+                <div class="modify-middle" aria-label="Fenetre créer une publication">
+                    <div>
+                        <span v-show="errorFirstNameUpdate" class="modify-middle__errormsg">Champ invalide, veuillez vérifier votre prénom.</span>
+                        <input type="text" v-model="firstNameUpdate" placeholder="Votre prénom" class="modify-middle__input"/>
+                    </div>
+                    <div>   
+                        <span v-show="errorLastNameUpdate" class="modify-middle__errormsg">Champ invalide, veuillez vérifier votre nom.</span>
+                        <input type="text" v-model="lastNameUpdate" placeholder="Votre nom" class="modify-middle__input"/>
+                    </div>
+                    <div>
+                        <span v-show="errorJobUpdate" class="modify-middle__errormsg">Champ invalide, veuillez vérifier votre poste.</span>
+                        <input type="text" v-model="jobUpdate" placeholder="Votre rôle dans l'entreprise" class="modify-middle__input"/>
+                    </div>
+                    <div  class="modify-middle-btn">
+                        <input type="file" aria-label="bouton ajouter une image">
+                        <fontAwesome icon="camera" class="modify-middle-btn__icon"/>
+                        <p class="modify-middle-btn__title">Votre photo de profil</p>
+                    </div>
+                </div>
+                <span class="modify-line"></span>
+                <div class="modify-bottom">
+                    <button type="submit" id="modifyProfil" class="modify-bottom-btn">Modifier</button>
+                </div>
+            </form>
         </div>
     </div>
     <div class="banniere-grey">
@@ -47,19 +60,14 @@ export default {
             firstname: "",
             lastname: "",
             job: "",
-            avatar: ""
+            avatar: "",
+            firstNameUpdate: "",
+            lastNameUpdate: "",
+            jobUpdate: "", 
+            errorFirstNameUpdate: false,
+            errorLastNameUpdate: false,
+            errorJobUpdate: false
         }
-    },
-    mounted() {
-        console.log(this.firstname);
-        axios.get("http://localhost:3000/api/auth/user/" + localStorage.getItem("userId"), { headers:{ "Authorization": "Bearer " + localStorage.getItem("token")}})
-            .then((response) => {
-                this.firstname = response.data.firstname;
-                this.lastname = response.data.lastname;
-                this.job = response.data.job;
-                this.avatar = response.data.avatar;
-                })
-            .catch(error => alert("Erreufrgfezrr : " + error));
     },
     methods: {
         showModifyWindow() {
@@ -69,6 +77,42 @@ export default {
                 this.modification = false;
             }
         },
+        updateProfil(e){
+            e.preventDefault();
+            var nameRegExp = new RegExp("^[A-zÀ-ú \-]+$");
+            this.errorFirstNameUpdate = !nameRegExp.test(this.firstNameUpdate);
+            this.errorLastNameUpdate = !nameRegExp.test(this.lastNameUpdate);
+            this.errorJobUpdate = !nameRegExp.test(this.jobUpdate);
+            if (this.errorFirstNameUpdate || this.errorLastNameUpdate || this.errorJobUpdate) {
+                return;
+            }
+            axios.put("http://localhost:3000/api/auth/user/" + localStorage.getItem("userId"), {
+                firstname: this.firstNameUpdate,
+                lastname: this.lastNameUpdate,
+                job: this.jobUpdate,
+            }, { headers:{ "Authorization": "Bearer " + localStorage.getItem("token")}})
+                .then((response) => {
+                    this.firstname = this.firstNameUpdate;
+                    this.lastname = this.lastNameUpdate;
+                    this.job = this.jobUpdate;
+                    // this.avatar = response.data.avatar;
+                    this.modification = false;
+                    })
+                .catch(error => alert("Erreur : " + error));
+        }
+    },
+    mounted() {
+        axios.get("http://localhost:3000/api/auth/user/" + localStorage.getItem("userId"), { headers:{ "Authorization": "Bearer " + localStorage.getItem("token")}})
+            .then((response) => {
+                this.firstname = response.data.firstname;
+                this.lastname = response.data.lastname;
+                this.job = response.data.job;
+                this.avatar = response.data.avatar;
+                this.firstNameUpdate = this.firstname;
+                this.lastNameUpdate = this.lastname;
+                this.jobUpdate = this.job;
+                })
+            .catch(error => alert("Erreur : " + error));
     }
 }
 </script>
@@ -119,7 +163,7 @@ export default {
     flex-direction: column;
     justify-content: space-between;
     width: 480px;
-    height:180px;
+    height:220px;
 }
 .modify-middle__input{
     height: 40px;
@@ -128,6 +172,7 @@ export default {
     padding:0;
     font-size: 0.8rem;
     padding-left:15px;
+    width: 463px
 }
 .modify-middle-btn{
     height: 40px;
@@ -161,6 +206,11 @@ export default {
     border-radius: 5px;
     border: none;
     margin: 13px;
+}
+.modify-middle__errormsg{
+    display: block;
+    font-size: 0.65rem;
+    margin:0;
 }
 
 .modify-bottom-btn:hover{
