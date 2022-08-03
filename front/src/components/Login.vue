@@ -58,7 +58,8 @@ export default {
 
             axios.post("http://localhost:3000/api/auth/login", { email: this.emailLogin, password: this.passwordLogin })
                 .then(function (response) {
-                    console.log(response);
+                    localStorage.setItem("token", response.data.token);
+                    localStorage.setItem("userId", response.data.userId);
                     router.push("feed");
                     })
                 .catch(error => alert("Erreur : " + error));
