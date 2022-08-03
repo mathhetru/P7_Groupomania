@@ -86,7 +86,6 @@ export default {
                 return;
             }
 
-            console.log("toto");
             axios.post('http://localhost:3000/api/auth/signup', { 
                 firstname: this.firstNameSignup,
                 lastname: this.lastNameSignup,
@@ -94,8 +93,9 @@ export default {
                 email: this.emailSignup, 
                 password: this.passwordSignup })
                 .then(function (response) {
-                    console.log(response);
-                    router.push('feed')
+                    localStorage.setItem("token", response.data.token);
+                    localStorage.setItem("userId", response.data.userId);
+                    router.push('feed');
                 })
                 .catch(error => alert("Erreur : " + error));
         }

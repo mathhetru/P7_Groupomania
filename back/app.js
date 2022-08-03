@@ -1,5 +1,6 @@
 const express = require('express');
 const mongoose = require("mongoose");
+const path = require("path");
 const app = express();
 const cors = require('cors');
 const dotenv = require('dotenv'); 
@@ -21,7 +22,7 @@ mongoose.connect(
     .then(() => console.log("Connexion à MongoDB réussie !"))
     .catch(() => console.log("Connexion à MongoDB échouée !")); 
 
-
+app.use("/images", express.static(path.join(__dirname, "images"))); 
 app.use("/api/auth", userRoutes); 
 
 module.exports = app;

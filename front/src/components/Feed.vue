@@ -37,7 +37,7 @@
 import { RouterLink } from "vue-router";
 
 export default {
-    name: "Publication",
+    name: "Publication2",
     data() {
         return {
             publication : false,

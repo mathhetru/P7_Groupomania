@@ -16,18 +16,18 @@
             </div>
             <span class="modify-line"></span>
             <div class="modify-bottom">
-                <button type="submit" name="publication" id="publication" class="modify-bottom-btn">Modifier</button>
+                <button type="submit" id="modifyProfil" class="modify-bottom-btn">Modifier</button>
             </div>
         </div>
     </div>
     <div class="banniere-grey">
         <div class="about">
             <div class="about-photo-profil">
-                <img src="../assets/avatar-groupomania.jpg" alt="photo-profil" class="about-photo-profil__img">
+                <img :src="avatar" alt="photo-profil" class="about-photo-profil__img">
             </div>
             <div class="about-informations">
-                <p class="about-info-name"><!--Aurélien Dehaine--></p>
-                <p class="about-info-poste"><!-- Technicien--></p>
+                <p class="about-info-name">{{ firstname }} {{ lastname }}</p>
+                <p class="about-info-poste">{{ job }}</p>
             </div>
             <button @click="showModifyWindow" class="about-modify-btn">Modifier</button>
         </div>
@@ -37,12 +37,29 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
     name: 'Profil',
     data() {
         return {
             modification : false,
+            firstname: "",
+            lastname: "",
+            job: "",
+            avatar: ""
         }
+    },
+    mounted() {
+        console.log(this.firstname);
+        axios.get("http://localhost:3000/api/auth/user/" + localStorage.getItem("userId"), { headers:{ "Authorization": "Bearer " + localStorage.getItem("token")}})
+            .then((response) => {
+                this.firstname = response.data.firstname;
+                this.lastname = response.data.lastname;
+                this.job = response.data.job;
+                this.avatar = response.data.avatar;
+                })
+            .catch(error => alert("Erreufrgfezrr : " + error));
     },
     methods: {
         showModifyWindow() {
