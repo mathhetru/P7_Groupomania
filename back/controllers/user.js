@@ -70,3 +70,27 @@ exports.getOneUser = (req, res, next) => {
       });
     });
 };
+
+exports.modifyUser = (req, res, next) => {
+  var userObject = {}; 
+  if (req.file) {
+    userObject = {
+      ...JSON.parse(req.body.user),
+      avatar: `${req.protocol}://${req.get("host")}/images/${req.file.filename}`,
+    };
+  } else {
+    userObject = { ...req.body }; 
+  }
+  delete userObject._userId; 
+  User.findOne({_id: req.params.id}) 
+    .then((user) => {
+      User.updateOne(
+        {_id: req.params.id},
+        {...userObject, _id: req.params.id})
+        .then(() => res.status(200).json({ message: "Modification(s) effectuée(s)", avatar: userObject.avatar }))
+        .catch((error) => res.status(400).json({ error }));
+    })
+  .catch((error) => {
+    res.status(400).json({ error });
+  });
+};

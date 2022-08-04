@@ -20,8 +20,8 @@
                         <span v-show="errorJobUpdate" class="modify-middle__errormsg">Champ invalide, veuillez vérifier votre poste.</span>
                         <input type="text" v-model="jobUpdate" placeholder="Votre rôle dans l'entreprise" class="modify-middle__input"/>
                     </div>
-                    <div  class="modify-middle-btn">
-                        <input type="file" aria-label="bouton ajouter une image">
+                    <div @click="modifyPicProfil" class="modify-middle-btn">
+                        <input type="file" aria-label="bouton ajouter une image" class="modify-middle-input" @change="handleFileUpload">
                         <fontAwesome icon="camera" class="modify-middle-btn__icon"/>
                         <p class="modify-middle-btn__title">Votre photo de profil</p>
                     </div>
@@ -66,10 +66,20 @@ export default {
             jobUpdate: "", 
             errorFirstNameUpdate: false,
             errorLastNameUpdate: false,
-            errorJobUpdate: false
+            errorJobUpdate: false,
+            inputFile: {},
         }
     },
     methods: {
+        handleFileUpload(e){
+            this.inputFile = {
+                name: e.target.files[0].name,
+                data: e.target.files[0]
+            };
+        },
+        modifyPicProfil(){
+            document.querySelector('.modify-middle-input').click();
+        },
         showModifyWindow() {
             if (!this.modification) {
                 this.modification = true;
@@ -83,19 +93,26 @@ export default {
             this.errorFirstNameUpdate = !nameRegExp.test(this.firstNameUpdate);
             this.errorLastNameUpdate = !nameRegExp.test(this.lastNameUpdate);
             this.errorJobUpdate = !nameRegExp.test(this.jobUpdate);
+            let user = {
+                firstname: this.firstNameUpdate,
+                lastname: this.lastNameUpdate,
+                job: this.jobUpdate
+            };
+            
+            let formData = new FormData();
+            formData.append('user', JSON.stringify(user));
+            if (this.inputFile.name != null){ 
+                formData.append('avatar', this.inputFile.data, this.inputFile.name);
+            }
             if (this.errorFirstNameUpdate || this.errorLastNameUpdate || this.errorJobUpdate) {
                 return;
             }
-            axios.put("http://localhost:3000/api/auth/user/" + localStorage.getItem("userId"), {
-                firstname: this.firstNameUpdate,
-                lastname: this.lastNameUpdate,
-                job: this.jobUpdate,
-            }, { headers:{ "Authorization": "Bearer " + localStorage.getItem("token")}})
+            axios.put("http://localhost:3000/api/auth/user/" + localStorage.getItem("userId"), formData, { headers:{ "Authorization": "Bearer " + localStorage.getItem("token")}})
                 .then((response) => {
+                    this.avatar = response.data.avatar;
                     this.firstname = this.firstNameUpdate;
                     this.lastname = this.lastNameUpdate;
                     this.job = this.jobUpdate;
-                    // this.avatar = response.data.avatar;
                     this.modification = false;
                     })
                 .catch(error => alert("Erreur : " + error));
@@ -173,6 +190,14 @@ export default {
     font-size: 0.8rem;
     padding-left:15px;
     width: 463px
+}
+input[type='file']{
+    position: absolute;
+    margin-top: 3px;
+    margin-left: 3px;
+    height: 1px;
+    width: 1px;
+    z-index: -5;
 }
 .modify-middle-btn{
     height: 40px;
