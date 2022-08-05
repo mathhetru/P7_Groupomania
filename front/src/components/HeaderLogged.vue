@@ -22,7 +22,7 @@
             <fontAwesome icon="circle-user" class="header-menu-panel__icon"/>
             <p class="header-menu-panel__title">Profil</p>
         </RouterLink>
-        <RouterLink to="/login" class="header-menu-panel">
+        <RouterLink @click="Logout" to="/login" class="header-menu-panel">
             <fontAwesome icon="arrow-right-from-bracket" class="header-menu-panel__icon"/>
             <p class="header-menu-panel__title">Logout</p>
         </RouterLink >
@@ -53,6 +53,9 @@ export default {
                 return 'header-nav-btn-hov'
             }
         },
+        Logout() {
+            localStorage.clear();
+        }
     }
 }
 </script>
