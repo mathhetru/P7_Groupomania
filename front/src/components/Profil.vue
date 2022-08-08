@@ -200,6 +200,7 @@ input[type='file']{
     z-index: -5;
 }
 .modify-middle-btn{
+    color: black;
     height: 40px;
     border-radius: 8px;
     border: 0.5px solid #4E5166;

@@ -6,21 +6,24 @@
                 <fontAwesome icon="close" @click="modifyPublication" class="create-post-top__close"/>
             </div>
             <span class="create-post-line"></span>
-            <div class="create-post-middle" aria-label="Fenetre créer une publication">
-                <textarea placeholder="Votre publication..." name="content-text" rows="2" class="create-post-middle__text" aria-label="Ecrire son texte ici"></textarea>
-                <button aria-label="bouton ajouter une image" class="create-post-middle-btn">
-                    <fontAwesome icon="camera" class="create-post-middle-btn__icon"/>
-                    <p class="create-post-middle-btn__title">Changer votre image</p>
-                </button>
-                <button aria-label="bouton ajouter une vidéo youtube" class="create-post-middle-btn">
-                    <fontAwesome icon="circle-play" class="create-post-middle-btn__icon"/>
-                    <p class="create-post-middle-btn__title">Modifier la vidéo via Youtube</p>
-                </button>
-            </div>
-            <span class="create-post-line"></span>
-            <div class="create-post-bottom">
-                <button type="submit" name="publication" id="publication" class="create-post-bottom-btn">Publier</button>
-            </div>
+            <form>
+                <div class="create-post-middle" aria-label="Fenetre créer une publication">
+                    <textarea v-model="modifyPostContent" placeholder="Votre publication..." name="content-text" rows="2" class="create-post-middle__text" aria-label="Ecrire son texte ici"></textarea>
+                    <div @click="modifyPublicationPic" class="create-post-middle-btn">
+                        <input type="file" aria-label="bouton ajouter une image" class="create-post-middle-input" @change="handleFileUpload">
+                        <fontAwesome icon="camera" class="create-post-middle-btn__icon"/>
+                        <p class="create-post-middle-btn__title">Ajouter une image</p>
+                    </div>
+                    <button aria-label="bouton ajouter une vidéo youtube" class="create-post-middle-btn">
+                        <fontAwesome icon="circle-play" class="create-post-middle-btn__icon"/>
+                        <p class="create-post-middle-btn__title">Modifier la vidéo via Youtube</p>
+                    </button>
+                </div>
+                <span class="create-post-line"></span>
+                <div class="create-post-bottom">
+                    <button type="submit" name="publication" id="publication" class="create-post-bottom-btn">Publier</button>
+                </div>
+            </form>
         </div>
     </div>
     <div class="post">
@@ -62,6 +65,9 @@
                 <img src="../assets/photoprofil.jpg" alt="photo-profil" class="post-photoprofil__img"/>
             </RouterLink>
             <div class="post-comment-insertgrey">
+                <div class="comment-supp">
+                    <p class="comment-supprimer">Supprimer</p>
+                </div>
                 <RouterLink to="/profil" class="post-comment__name">Aurélien Dehaine</RouterLink>
                 <p class="post-comment__text">Magnifique témoignage ; si illustrant, si vrai... si courageux et fort.
                     Lorem ipsum dolor sit amet, consectetur adipisicing elit. Labore voluptatibus fugit eaque illo nesciunt architecto odio ipsa numquam omnis magni! Ad sunt illo provident voluptatibus. Excepturi suscipit autem ab magnam?
@@ -83,14 +89,27 @@
 
 <script>
 import { RouterLink } from "vue-router";
+import axios from "axios";
+
 export default {
     name: 'Publication',
         data() {
         return {
             modification : false,
+            modifyPostContent: "",
+            inputFile: {},
         }
     },
     methods: {
+        handleFileUpload(e){
+            this.inputFile = {
+                name: e.target.files[0].name,
+                data: e.target.files[0]
+            };
+        },
+        addPublicationPic(){
+            document.querySelector('.create-post-middle-input').click();
+        },
         modifyPublication() {
             if (!this.modification) {
                 this.modification = true;
@@ -98,6 +117,7 @@ export default {
                 this.modification = false;
             }
         },
+        
     }
 }
 </script>
@@ -156,6 +176,7 @@ export default {
     border: 0.5px solid #4E5166;
 }
 .create-post-middle-btn{
+    color: black;
     height: 40px;
     width:calc(50% - 15px);
     margin-top: 30px;
@@ -165,6 +186,14 @@ export default {
     display: flex;
     align-items: center;
     cursor: pointer;
+}
+input[type='file']{
+    position: absolute;
+    margin-top: 3px;
+    margin-left: 3px;
+    height: 1px;
+    width: 1px;
+    z-index: -5;
 }
 .create-post-middle-btn:hover{
     background-color: #4E5166;
@@ -246,6 +275,7 @@ export default {
 }
 .post-modsup > p:hover{
     font-weight: bolder;
+    color: #FD2D01;
 }
 .post-middle-content-pict{
     margin:25px -25px;
@@ -276,7 +306,9 @@ export default {
     color:#FD2D01;
 }
 .post-bottom__input{
-    max-width: 100%;
+    min-width: 560px;
+    max-width: 90%;
+    min-height:42px;
     max-height:500px;
     text-align: left;
     padding:10px 0 10px 10px;
@@ -306,5 +338,20 @@ export default {
 }
 .post-comment__text{
     font-size: 0.8rem;
+}
+.comment-supp{
+    text-align: right;
+    position: absolute;
+    right:35px;
+}
+.comment-supp > p{
+    cursor: pointer;
+    margin:0;
+    font-size: 0.8rem;
+    font-weight: lighter;
+}
+.comment-supp > p:hover{
+    font-weight: bolder;
+    color: #FD2D01;
 }
 </style>

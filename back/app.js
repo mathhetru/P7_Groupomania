@@ -10,6 +10,7 @@ app.use(cors());
 app.use(express.json());
 
 const userRoutes = require("./routes/user");
+const postRoutes = require("./routes/post");
 
 const myAccount = process.env.account;
 const myMdp = process.env.mdp; 
@@ -22,7 +23,9 @@ mongoose.connect(
     .then(() => console.log("Connexion à MongoDB réussie !"))
     .catch(() => console.log("Connexion à MongoDB échouée !")); 
 
-app.use("/images", express.static(path.join(__dirname, "images"))); 
-app.use("/api/auth", userRoutes); 
+app.use("/avatars", express.static(path.join(__dirname, "avatars"))); 
+app.use("/images-posts", express.static(path.join(__dirname, "images-posts"))); 
+app.use("/api/auth", userRoutes);
+app.use("/api/auth", postRoutes); 
 
 module.exports = app;

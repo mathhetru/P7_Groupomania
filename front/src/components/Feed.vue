@@ -6,26 +6,29 @@
                 <fontAwesome icon="close" @click="createPublication" class="create-post-top__close"/>
             </div>
             <span class="create-post-line"></span>
-            <div class="create-post-middle" aria-label="Fenetre créer une publication">
-                <textarea placeholder="Votre publication..." name="content-text" rows="2" class="create-post-middle__text" aria-label="Ecrire son texte ici"></textarea>
-                <button aria-label="bouton ajouter une image" class="create-post-middle-btn">
-                    <fontAwesome icon="camera" class="create-post-middle-btn__icon"/>
-                    <p class="create-post-middle-btn__title">Ajouter une image</p>
-                </button>
-                <button aria-label="bouton ajouter une vidéo youtube" class="create-post-middle-btn">
-                    <fontAwesome icon="circle-play" class="create-post-middle-btn__icon"/>
-                    <p class="create-post-middle-btn__title">Ajouter une vidéo via Youtube</p>
-                </button>
-            </div>
-            <span class="create-post-line"></span>
-            <div class="create-post-bottom">
-                <button type="submit" name="publication" id="publication" class="create-post-bottom-btn">Publier</button>
-            </div>
+            <form @submit="createPost">
+                <div class="create-post-middle" aria-label="Fenetre créer une publication">
+                    <textarea v-model="contentPost" placeholder="Votre publication..." name="content-text" rows="2" class="create-post-middle__text" aria-label="Ecrire son texte ici"></textarea>
+                    <div @click="addPublicationPic" class="create-post-middle-btn">
+                        <input type="file" aria-label="bouton ajouter une image" class="create-post-middle-input" @change="handleFileUpload">
+                        <fontAwesome icon="camera" class="create-post-middle-btn__icon"/>
+                        <p class="create-post-middle-btn__title">Ajouter une image</p>
+                    </div>
+                    <button aria-label="bouton ajouter une vidéo youtube" class="create-post-middle-btn">
+                        <fontAwesome icon="circle-play" class="create-post-middle-btn__icon"/>
+                        <p class="create-post-middle-btn__title">Ajouter une vidéo via Youtube</p>
+                    </button>
+                </div>
+                <span class="create-post-line"></span>
+                <div class="create-post-bottom">
+                    <button type="submit" name="publication" id="publication" class="create-post-bottom-btn">Publier</button>
+                </div>
+            </form>
         </div>
     </div>
     <div class="main-create-post">
-        <RouterLink to="/profil" class="main-create-post-photoprofil">
-            <img src="../assets/photoprofil.jpg" alt="photo-profil" class="main-create-post-photoprofil__img"/>
+        <RouterLink to="/:id" class="main-create-post-photoprofil">
+            <img :src="avatar" alt="photo-profil" class="main-create-post-photoprofil__img"/>
         </RouterLink>
         <button class="main-create-post-btn" @click="createPublication">
             <p class="main-create-post-btn__title">Créer une publication...</p>
@@ -35,15 +38,29 @@
 
 <script>
 import { RouterLink } from "vue-router";
+import axios from "axios";
+import router from "../router";
 
 export default {
-    name: "Publication2",
+    name: "Feed",
     data() {
         return {
             publication : false,
+            avatar: "",
+            contentPost: "",
+            inputFile: {},
         }
     },
     methods: {
+        handleFileUpload(e){
+            this.inputFile = {
+                name: e.target.files[0].name,
+                data: e.target.files[0]
+            };
+        },
+        addPublicationPic(){
+            document.querySelector('.create-post-middle-input').click();
+        },
         createPublication() {
             if (!this.publication) {
                 this.publication = true;
@@ -51,6 +68,33 @@ export default {
                 this.publication = false;
             }
         },
+        createPost(e){
+            e.preventDefault();
+            let post = {
+                userId: localStorage.getItem("userId"),
+                date: Date.now(),
+                content: this.contentPost,
+                like: 0,
+            };
+            
+            let formData = new FormData();
+            formData.append('post', JSON.stringify(post));
+            if (this.inputFile.name != null){ 
+                formData.append('imageUrl', this.inputFile.data, this.inputFile.name);
+            }
+            axios.post("http://localhost:3000/api/auth/posts", formData, { headers:{ "Authorization": "Bearer " + localStorage.getItem("token")}})
+                .then((response) => {
+                    router.go();
+                    })
+                .catch(error => alert("Erreur : " + error));
+        }
+    },
+    mounted() {
+        axios.get("http://localhost:3000/api/auth/user/" + localStorage.getItem("userId"), { headers:{ "Authorization": "Bearer " + localStorage.getItem("token")}})
+            .then((response) => {
+                this.avatar = response.data.avatar;
+                })
+            .catch(error => alert("Erreur : " + error));
     }
 }
 </script>
@@ -110,6 +154,7 @@ export default {
     border: 0.5px solid #4E5166;
 }
 .create-post-middle-btn{
+    color: black;
     height: 40px;
     width:calc(50% - 15px);
     margin-top: 30px;
@@ -119,6 +164,14 @@ export default {
     display: flex;
     align-items: center;
     cursor: pointer;
+}
+input[type='file']{
+    position: absolute;
+    margin-top: 3px;
+    margin-left: 3px;
+    height: 1px;
+    width: 1px;
+    z-index: -5;
 }
 .create-post-middle-btn:hover{
     background-color: #4E5166;
@@ -157,6 +210,7 @@ export default {
 .main-create-post-photoprofil{
     border-radius: 100px;
     height:60px;
+    width: 60px;
     overflow: hidden;
 }
 .main-create-post-photoprofil__img{

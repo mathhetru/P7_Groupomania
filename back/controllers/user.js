@@ -16,7 +16,7 @@ exports.signup = (req, res, next) => {
         email: req.body.email,
         password: hash,
         role: role, 
-        avatar: `${req.protocol}://${req.get("host")}/images/avatar-groupomania.jpg`
+        avatar: `${req.protocol}://${req.get("host")}/avatars/avatar-groupomania.jpg`
       });
       signupUser.save() 
         .then(() => res.status(201).json({ 
@@ -76,7 +76,7 @@ exports.modifyUser = (req, res, next) => {
   if (req.file) {
     userObject = {
       ...JSON.parse(req.body.user),
-      avatar: `${req.protocol}://${req.get("host")}/images/${req.file.filename}`,
+      avatar: `${req.protocol}://${req.get("host")}/avatars/${req.file.filename}`,
     };
   } else {
     userObject = { ...JSON.parse(req.body.user) }; 
