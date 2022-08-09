@@ -12,7 +12,6 @@ import Publication from '../components/Publication.vue';
     <main id="main">
         <Feed/>
         <Publication/>
-        <Publication/>
     </main>
 </template>
 

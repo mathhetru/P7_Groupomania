@@ -26,15 +26,16 @@
             </form>
         </div>
     </div>
-    <div class="post">
+    <div v-if="messages.length == 0" class="nothing">Il n'y a pas de publications pour l'instant !</div>
+    <div v-else="messages.length != 0" v-for="message in messages" :key="message.id" class="post">
         <div class="post-top">
             <RouterLink to="/profil" class="post-photoprofil">
-                <img src="../assets/photoprofil.jpg" alt="photo-profil" class="post-photoprofil__img"/>
+                <img :src="avatar" alt="photo-profil" class="post-photoprofil__img"/>
             </RouterLink>
             <div class="post-informations">
-                <RouterLink to="/profil" class="post-name">Aurélien Dehaine</RouterLink>
-                <p class="post-titre-poste">Chargée de mission Stratégie</p>
-                <p class="post-date">jeudi 7 juillet à 11h45</p>
+                <RouterLink to="/profil" class="post-name">{{ firstname }} {{ lastname }}</RouterLink>
+                <p class="post-titre-poste">{{ job }}</p>
+                <p class="post-date">{{ message.date }}</p>
             </div>
         </div>
         <div class="post-modsup">
@@ -43,16 +44,16 @@
         </div>
         <div class="post-middle">
             <div class="post-middle-content">
-                <p class="post-middle__text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Labore voluptatibus fugit eaque illo nesciunt architecto odio ipsa numquam omnis magni! Ad sunt illo provident voluptatibus. Excepturi suscipit autem ab magnam?</p>
-                <div class="post-middle-content-pict">
-                    <img src="../assets/20220519_165618.jpg" alt="photo-publication" class="post-middle-content-pict__img"/>
+                <p class="post-middle__text">{{ message.content }}</p>
+                <div v-if="message.imageUrl" class="post-middle-content-pict">
+                    <img :src="message.imageUrl" alt="photo-publication" class="post-middle-content-pict__img"/>
                 </div>
             </div>
         </div>
         <div class="post-middle-like-comment">
             <div class="post-middle-like">
                 <fontAwesome icon="thumbs-up" class="post-middle-like__icon"/>
-                <p class="post-middle-like__number">56</p>
+                <p class="post-middle-like__number">{{ message.likes }}</p>
             </div>
             <div class="post-middle-comment">
                 <p class="post-middle-comment__number">56</p>
@@ -95,9 +96,19 @@ export default {
     name: 'Publication',
         data() {
         return {
+            publicationPic: true,
             modification : false,
             modifyPostContent: "",
             inputFile: {},
+            avatar: "",
+            firstname: "",
+            lastname: "",
+            job: "",
+            datePost: "",
+            imageUrl: "",
+            contentPost: "",
+            likes: "",
+            messages: [],
         }
     },
     methods: {
@@ -116,8 +127,14 @@ export default {
             } else {
                 this.modification = false;
             }
-        },
-        
+        }
+    },
+    mounted() {
+        axios.get("http://localhost:3000/api/auth/posts", { headers:{ "Authorization": "Bearer " + localStorage.getItem("token")}})
+            .then((response) => {
+                this.messages = response.data;
+                })
+            .catch(error => alert("Erreur : " + error));
     }
 }
 </script>
@@ -218,6 +235,12 @@ input[type='file']{
 .create-post-bottom-btn:hover{
     box-shadow: 1px 1px 10px #FD2D01;
     transition: 0.2s linear;
+}
+.nothing{
+    max-width: 570px;
+    margin: 45px auto;
+    text-align: center;
+    font-weight: bolder;
 }
 .post{
     position: relative;

@@ -74,7 +74,8 @@ export default {
                 userId: localStorage.getItem("userId"),
                 date: Date.now(),
                 content: this.contentPost,
-                like: 0,
+                likes: 0,
+                usersLiked: null,
             };
             
             let formData = new FormData();
