@@ -47,6 +47,7 @@ export default {
         return {
             publication : false,
             avatar: "",
+            userRole: "",
             contentPost: "",
             inputFile: {},
         }
@@ -94,6 +95,7 @@ export default {
         axios.get("http://localhost:3000/api/auth/user/" + localStorage.getItem("userId"), { headers:{ "Authorization": "Bearer " + localStorage.getItem("token")}})
             .then((response) => {
                 this.avatar = response.data.avatar;
+                this.userRole = response.data.role;
                 })
             .catch(error => alert("Erreur : " + error));
     }

@@ -22,31 +22,45 @@ exports.createPost = (req, res, next) => {
 
 exports.getOnePost = (req, res, next) => {
     Post.findOne({_id: req.params.id})
-    .then((post) => { res.status(200).json(post);})
-    .catch((error) => { res.status(404).json({error: error});
-    });
+    .then((post) => res.status(200).json(post))
+    .catch((error) => res.status(404).json({error: error}));
+};
+
+exports.getAllPost = (req, res, next) => {
+  const postsList = [];
+    Post.find() 
+    .then(async (posts) => {
+      for(let i=0; i < posts.length; i++) {
+        const post = posts[i];
+        var userId = post.userId;
+        var user = await User.findOne({_id: userId});
+        postsList.push({
+          post: post,
+          user: {
+            firstname: user.firstname,
+            lastname: user.lastname,
+            job: user.job,
+            avatar: user.avatar,
+            role: user.role,
+          }
+        });
+      }
+      return res.status(200).json(postsList);
+    })
+    /*.then(() => {
+      console.log(postsList);
+      return res.status(200).json(postsList);
+    })*/
+    .catch((error) => { res.status(400).json({error: error});
+  });
 };
 
 /*exports.getAllPost = (req, res, next) => {
     Post.find() 
-    .then((posts) => {
-        posts.forEach(post => { 
-            var userId = post.userId;
-            User.findOne({_id: userId})
-            .then((user) => { res.status(200).json(user);})
-            .catch((error) => { res.status(404).json({error: error});
-            });
-        }); res.status(200).json(posts);})
-    .catch((error) => { res.status(400).json({error: error});
-    });
-};*/
-
-exports.getAllPost = (req, res, next) => {
-    Post.find() 
     .then((posts) => { res.status(200).json(posts);})
     .catch((error) => { res.status(400).json({error: error});
     });
-};
+};*/
 
 exports.modifyPost = (req, res, next) => {
     var postObject = {}; 

@@ -27,33 +27,33 @@
         </div>
     </div>
     <div v-if="messages.length == 0" class="nothing">Il n'y a pas de publications pour l'instant !</div>
-    <div v-else="messages.length != 0" v-for="message in messages" :key="message.id" class="post">
+    <div v-else v-for="message in messages" :key="message.id" class="post">
         <div class="post-top">
             <RouterLink to="/profil" class="post-photoprofil">
-                <img :src="avatar" alt="photo-profil" class="post-photoprofil__img"/>
+                <img :src="message.user.avatar" alt="photo-profil" class="post-photoprofil__img"/>
             </RouterLink>
             <div class="post-informations">
-                <RouterLink to="/profil" class="post-name">{{ firstname }} {{ lastname }}</RouterLink>
-                <p class="post-titre-poste">{{ job }}</p>
-                <p class="post-date">{{ message.date }}</p>
+                <RouterLink to="/profil" class="post-name">{{ message.user.firstname }} {{ message.user.lastname }}</RouterLink>
+                <p class="post-titre-poste">{{ message.user.job }}</p>
+                <p class="post-date">Le {{ dateTime(message.post.date) }}</p>
             </div>
         </div>
-        <div class="post-modsup">
+        <div v-if="this.userRole == 'administrateur' || message.post.userId == this.userId" class="post-modsup">
             <p @click="modifyPublication" class="post-modifier">Modifier</p>
             <p class="post-supprimer">Supprimer</p>
         </div>
         <div class="post-middle">
             <div class="post-middle-content">
-                <p class="post-middle__text">{{ message.content }}</p>
-                <div v-if="message.imageUrl" class="post-middle-content-pict">
-                    <img :src="message.imageUrl" alt="photo-publication" class="post-middle-content-pict__img"/>
+                <p class="post-middle__text">{{ message.post.content }}</p>
+                <div v-if="message.post.imageUrl" class="post-middle-content-pict">
+                    <img :src="message.post.imageUrl" alt="photo-publication" class="post-middle-content-pict__img"/>
                 </div>
             </div>
         </div>
         <div class="post-middle-like-comment">
             <div class="post-middle-like">
                 <fontAwesome icon="thumbs-up" class="post-middle-like__icon"/>
-                <p class="post-middle-like__number">{{ message.likes }}</p>
+                <p class="post-middle-like__number">{{ message.post.likes }}</p>
             </div>
             <div class="post-middle-comment">
                 <p class="post-middle-comment__number">56</p>
@@ -75,27 +75,20 @@
                 </p>
             </div>
         </div>
-        <div class="post-comment">
-            <RouterLink to="/profil" class="post-photoprofil">
-                <img src="../assets/photoprofil.jpg" alt="photo-profil" class="post-photoprofil__img"/>
-            </RouterLink>
-            <div class="post-comment-insertgrey">
-                <RouterLink to="/profil" class="post-comment__name">Aurélien Dehaine</RouterLink>
-                <p class="post-comment__text">Magnifique témoignage ; si illustrant, si vrai... si courageux et fort.
-                </p>
-            </div>
-        </div>
     </div>
 </template>
 
 <script>
 import { RouterLink } from "vue-router";
 import axios from "axios";
+import moment from "moment";
+import 'moment/locale/fr';
 
 export default {
     name: 'Publication',
         data() {
         return {
+            modifyOrDel: "",
             publicationPic: true,
             modification : false,
             modifyPostContent: "",
@@ -109,6 +102,8 @@ export default {
             contentPost: "",
             likes: "",
             messages: [],
+            userId: "",
+            userRole: "",
         }
     },
     methods: {
@@ -127,12 +122,22 @@ export default {
             } else {
                 this.modification = false;
             }
+        },
+        dateTime(value) {
+            moment.locale('fr');
+            return moment(value).format("LLLL");
         }
     },
     mounted() {
         axios.get("http://localhost:3000/api/auth/posts", { headers:{ "Authorization": "Bearer " + localStorage.getItem("token")}})
             .then((response) => {
                 this.messages = response.data;
+                })
+            .catch(error => alert("Erreur : " + error));
+        axios.get("http://localhost:3000/api/auth/user/" + localStorage.getItem("userId"), { headers:{ "Authorization": "Bearer " + localStorage.getItem("token")}})
+            .then((response) => {
+                this.userRole = response.data.role;
+                this.userId = localStorage.getItem("userId");
                 })
             .catch(error => alert("Erreur : " + error));
     }
