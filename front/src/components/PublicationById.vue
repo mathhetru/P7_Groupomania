@@ -27,33 +27,33 @@
         </div>
     </div>
     <div v-if="messages.length == 0" class="nothing">Il n'y a pas de publications pour l'instant !</div>
-    <div v-else v-for="message in messages" :key="message.id" class="post">
+    <div v-else v-for="message in messages"  class="post">
         <div class="post-top">
             <RouterLink to="/profil" class="post-photoprofil">
-                <img :src="message.user.avatar" alt="photo-profil" class="post-photoprofil__img"/>
+                <img :src="avatar" alt="photo-profil" class="post-photoprofil__img"/>
             </RouterLink>
             <div class="post-informations">
-                <RouterLink to="/profil" class="post-name">{{ message.user.firstname }} {{ message.user.lastname }}</RouterLink>
-                <p class="post-titre-poste">{{ message.user.job }}</p>
-                <p class="post-date">Le {{ dateTime(message.post.date) }}</p>
+                <RouterLink to="/profil" class="post-name">{{ firstname }} {{ lastname }}</RouterLink>
+                <p class="post-titre-poste">{{ job }}</p>
+                <p class="post-date">{{ dateTime(message.date) }}</p>
             </div>
         </div>
-        <div v-if="this.userRole == 'administrateur' || message.post.userId == this.userId" class="post-modsup">
-            <p @click="modifyPublication(message.post._id)" class="post-modifier">Modifier</p>
+        <div class="post-modsup">
+            <p @click="modifyPublication(message._id)" class="post-modifier">Modifier</p>
             <p class="post-supprimer">Supprimer</p>
         </div>
         <div class="post-middle">
             <div class="post-middle-content">
-                <p class="post-middle__text">{{ message.post.content }}</p>
-                <div v-if="message.post.imageUrl" class="post-middle-content-pict">
-                    <img :src="message.post.imageUrl" alt="photo-publication" class="post-middle-content-pict__img"/>
+                <p class="post-middle__text">{{ message.content }}</p>
+                <div v-if="message.imageUrl" class="post-middle-content-pict">
+                    <img :src="message.imageUrl" alt="photo-publication" class="post-middle-content-pict__img"/>
                 </div>
             </div>
         </div>
         <div class="post-middle-like-comment">
             <div class="post-middle-like">
                 <fontAwesome icon="thumbs-up" class="post-middle-like__icon"/>
-                <p class="post-middle-like__number">{{ message.post.likes }}</p>
+                <p class="post-middle-like__number">{{ message.likes }}</p>
             </div>
             <div class="post-middle-comment">
                 <p class="post-middle-comment__number">56</p>
@@ -94,6 +94,10 @@ export default {
             modification : false,
             modifyPostContent: "",
             inputFile: {},
+            avatar: "",
+            firstname: "",
+            lastname: "",
+            job: "",
             messages: [],
             userId: "",
             userRole: "",
@@ -146,11 +150,23 @@ export default {
     mounted() {
         axios.get("http://localhost:3000/api/auth/posts", { headers:{ "Authorization": "Bearer " + localStorage.getItem("token")}})
             .then((response) => {
-                this.messages = response.data.reverse();
-                })
+                var datas = response.data.reverse();
+                for(let i=0; i < datas.length; i++) {
+                    var data = datas[i];
+                    // console.log(data.post.userId);
+                    if (data.post.userId == localStorage.getItem("userId")) {
+                        this.messages.push(data.post);
+                        // console.log(this.messages.date);
+                    }
+                }
+            })
             .catch(error => alert("Erreur : " + error));
         axios.get("http://localhost:3000/api/auth/user/" + localStorage.getItem("userId"), { headers:{ "Authorization": "Bearer " + localStorage.getItem("token")}})
             .then((response) => {
+                this.avatar = response.data.avatar;
+                this.firstname = response.data.firstname;
+                this.lastname = response.data.lastname;
+                this.job = response.data.job;
                 this.userRole = response.data.role;
                 this.userId = localStorage.getItem("userId");
                 })

@@ -27,7 +27,7 @@
         </div>
     </div>
     <div class="main-create-post">
-        <RouterLink to="/:id" class="main-create-post-photoprofil">
+        <RouterLink to="/profil" class="main-create-post-photoprofil">
             <img :src="avatar" alt="photo-profil" class="main-create-post-photoprofil__img"/>
         </RouterLink>
         <button class="main-create-post-btn" @click="createPublication">

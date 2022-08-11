@@ -51,6 +51,7 @@
 
 <script>
 import axios from "axios";
+import router from "../router";
 
 export default {
     name: 'Profil',
@@ -67,7 +68,7 @@ export default {
             errorFirstNameUpdate: false,
             errorLastNameUpdate: false,
             errorJobUpdate: false,
-            inputFile: {},
+            inputFile: {}
         }
     },
     methods: {
@@ -114,6 +115,7 @@ export default {
                     this.lastname = this.lastNameUpdate;
                     this.job = this.jobUpdate;
                     this.modification = false;
+                    router.go();
                     })
                 .catch(error => alert("Erreur : " + error));
         }
