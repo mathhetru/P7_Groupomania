@@ -47,20 +47,9 @@ exports.getAllPost = (req, res, next) => {
       }
       return res.status(200).json(postsList);
     })
-    /*.then(() => {
-      console.log(postsList);
-      return res.status(200).json(postsList);
-    })*/
     .catch((error) => { res.status(400).json({error: error});
   });
 };
-
-/*exports.getAllPost = (req, res, next) => {
-    Post.find() 
-    .then((posts) => { res.status(200).json(posts);})
-    .catch((error) => { res.status(400).json({error: error});
-    });
-};*/
 
 exports.modifyPost = (req, res, next) => {
     var postObject = {}; 
@@ -95,13 +84,31 @@ exports.deletePost = (req, res, next) => {
             const filename = post.imageUrl.split("/images-posts/")[1];
             Post.deleteOne({ _id: req.params.id }) 
                 .then(() => {
+                  if (filename != null) { 
                     fs.unlink(`images-posts/${filename}`, () => {});
+                  }
                     res.status(200).json({ message: "Publication supprimée !" });
                 })
                 .catch((error) => res.status(400).json({ error }));
         })
         .catch((error) => res.status(500).json({ error }));
 };
+
+/*exports.deletePost = (req, res, next) => {
+  Post.findOne({ _id: req.params.id }) 
+      .then((post) => {
+        if (post.imageUrl != null) { 
+          const filename = post.imageUrl.split("/images-posts/")[1]; }
+          Post.deleteOne({ _id: req.params.id }) 
+              .then(() => {
+                if (filename != null) { 
+                  fs.unlink(`images-posts/${filename}`, () => {});}
+                  res.status(200).json({ message: "Publication supprimée !" });
+              })
+              .catch((error) => res.status(400).json({ error }));
+      })
+      .catch((error) => res.status(500).json({ error }));
+};*/
 
 /* exports.likedSauce = (req, res, next) => {
   Sauce.findOne({ _id: req.params.id }).then((sauce) => {

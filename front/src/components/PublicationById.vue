@@ -40,7 +40,7 @@
         </div>
         <div class="post-modsup">
             <p @click="modifyPublication(message._id)" class="post-modifier">Modifier</p>
-            <p class="post-supprimer">Supprimer</p>
+            <p @click="delPublication(message._id)" class="post-supprimer">Supprimer</p>
         </div>
         <div class="post-middle">
             <div class="post-middle-content">
@@ -145,7 +145,14 @@ export default {
                     router.go();
                     })
                 .catch(error => alert("Erreur : " + error));
-        }
+        },
+        delPublication(value){
+            axios.delete("http://localhost:3000/api/auth/posts/" + value, { headers:{ "Authorization": "Bearer " + localStorage.getItem("token")}})
+                .then((response) => {
+                    router.go();
+                    })
+                .catch(error => alert("Erreur : " + error));
+        },
     },
     mounted() {
         axios.get("http://localhost:3000/api/auth/posts", { headers:{ "Authorization": "Bearer " + localStorage.getItem("token")}})

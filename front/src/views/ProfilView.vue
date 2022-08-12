@@ -1,7 +1,7 @@
 <script setup>
 import HeaderLogged from '../components/HeaderLogged.vue';
 import Profil from '../components/Profil.vue';
-import PublicationById from '../components/PublicationById.vue';
+import Publication from '../components/Publication.vue';
 </script>
 
 <template>
@@ -11,7 +11,7 @@ import PublicationById from '../components/PublicationById.vue';
     <span class="header-line"></span>
     <main id="main">
         <Profil />
-        <PublicationById/>
+        <Publication/>
     </main>
 </template>
 

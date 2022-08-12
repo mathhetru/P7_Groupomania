@@ -88,7 +88,7 @@ export default {
                 .then((response) => {
                     router.go();
                     })
-                .catch(error => alert("Erreur : " + error));
+                .catch(error => alert("Erreur : ajoutez du texte en plus de la photo " + error));
         }
     },
     mounted() {

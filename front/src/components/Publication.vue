@@ -35,12 +35,12 @@
             <div class="post-informations">
                 <RouterLink to="/profil" class="post-name">{{ message.user.firstname }} {{ message.user.lastname }}</RouterLink>
                 <p class="post-titre-poste">{{ message.user.job }}</p>
-                <p class="post-date">Le {{ dateTime(message.post.date) }}</p>
+                <p class="post-date">{{ dateTime(message.post.date) }}</p>
             </div>
         </div>
         <div v-if="this.userRole == 'administrateur' || message.post.userId == this.userId" class="post-modsup">
-            <p @click="modifyPublication(message.post._id)" class="post-modifier">Modifier</p>
-            <p class="post-supprimer">Supprimer</p>
+            <p @click="modifyPublication(message.post._id, message.post.content)" class="post-modifier">Modifier</p>
+            <p @click="delPublication(message.post._id)" class="post-supprimer">Supprimer</p>
         </div>
         <div class="post-middle">
             <div class="post-middle-content">
@@ -83,7 +83,6 @@ import { RouterLink } from "vue-router";
 import router from "../router";
 import axios from "axios";
 import moment from "moment";
-import 'moment/locale/fr';
 
 export default {
     name: 'Publication',
@@ -110,17 +109,26 @@ export default {
         modifyPublicationPic(){
             document.querySelector('.create-post-middle-input').click();
         },
-        modifyPublication(value) {
+        modifyPublication(value1, value2) {
             if (!this.modification) {
                 this.modification = true;
             } else {
                 this.modification = false;
             }
-            this.getIdPost = value;
+            this.getIdPost = value1;
+            this.modifyPostContent = value2;
+        },
+        delPublication(value){
+            axios.delete("http://localhost:3000/api/auth/posts/" + value, { headers:{ "Authorization": "Bearer " + localStorage.getItem("token")}})
+                .then(() => {
+                    router.go();
+                    })
+                .catch(error => alert("Erreur : " + error));
         },
         dateTime(value) {
-            moment.locale('fr');
-            return moment(value).format("LLLL");
+            var date = moment(value);
+            date.locale('fr');
+            return date.format("LLL");
         },
         updatePublication(e){
             e.preventDefault();
@@ -146,8 +154,20 @@ export default {
     mounted() {
         axios.get("http://localhost:3000/api/auth/posts", { headers:{ "Authorization": "Bearer " + localStorage.getItem("token")}})
             .then((response) => {
-                this.messages = response.data.reverse();
-                })
+                var datas = response.data.reverse();
+                var currentPath = this.$route.path;
+                if (currentPath == "/profil") {
+                    for (let i=0; i < datas.length; i++) {
+                        var data = datas[i];
+                        if (data.post.userId == localStorage.getItem("userId")) {
+                            this.messages.push(data);
+                        }
+                    }
+                } 
+                else {
+                    this.messages = datas;
+                }
+            })
             .catch(error => alert("Erreur : " + error));
         axios.get("http://localhost:3000/api/auth/user/" + localStorage.getItem("userId"), { headers:{ "Authorization": "Bearer " + localStorage.getItem("token")}})
             .then((response) => {
