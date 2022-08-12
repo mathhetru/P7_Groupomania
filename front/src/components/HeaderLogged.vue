@@ -133,6 +133,7 @@ export default {
     align-items: center;
     text-decoration: none;
     color: #FD2D01;
+    background-color: white;
     font-weight: bold;
     width: 110px;
     height: 39px;
@@ -152,11 +153,13 @@ export default {
     height: 39px;
     border-radius: 30px;
     border: 2px solid #FD2D01;
+    box-shadow: 2px 3px 8px #d0d1d6
 }
 .header-nav-btn:hover{
     color: white;
     background-color: #FD2D01;
     transition: 0.2s linear;
+    box-shadow: 2px 3px 8px #d0d1d6
 }
 .header-nav-btn__icon{
     margin-bottom: 5px;

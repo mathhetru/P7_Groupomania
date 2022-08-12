@@ -209,6 +209,7 @@ input[type='file']{
     border-radius: 30px;
     border: 0.5px solid #4E5166;
     padding:25px;
+    box-shadow: 2px 3px 8px #d0d1d6;
 }
 .main-create-post-photoprofil{
     border-radius: 100px;

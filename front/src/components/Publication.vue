@@ -1,27 +1,27 @@
 <template>
-    <div class="create-post" v-show="modification">
-        <div class="create-post-window">
-            <div class="create-post-top">
-                <p class="create-post-top__title">Modifier votre publication</p>
-                <fontAwesome icon="close" @click="modifyPublication" class="create-post-top__close"/>
+    <div class="modify-post" v-show="modification">
+        <div class="modify-post-window">
+            <div class="modify-post-top">
+                <p class="modify-post-top__title">Modifier votre publication</p>
+                <fontAwesome icon="close" @click="modifyPublication" class="modify-post-top__close"/>
             </div>
-            <span class="create-post-line"></span>
+            <span class="modify-post-line"></span>
             <form @submit="updatePublication">
-                <div class="create-post-middle" aria-label="Fenetre créer une publication">
-                    <textarea v-model="modifyPostContent" placeholder="Votre publication..." name="content-text" rows="2" class="create-post-middle__text" aria-label="Ecrire son texte ici"></textarea>
-                    <div @click="modifyPublicationPic" class="create-post-middle-btn">
-                        <input type="file" aria-label="bouton ajouter une image" class="create-post-middle-input" @change="handleFileUpload">
-                        <fontAwesome icon="camera" class="create-post-middle-btn__icon"/>
-                        <p class="create-post-middle-btn__title">Ajouter une image</p>
+                <div class="modify-post-middle" aria-label="Fenetre créer une publication">
+                    <textarea v-model="modifyPostContent" placeholder="Votre publication..." name="content-text" rows="2" class="modify-post-middle__text" aria-label="Ecrire son texte ici"></textarea>
+                    <div @click="modifyPublicationPic" class="modify-post-middle-btn">
+                        <input type="file" aria-label="bouton ajouter une image" class="modify-post-middle-input" @change="handleFileModifyUpload">
+                        <fontAwesome icon="camera" class="modify-post-middle-btn__icon"/>
+                        <p class="modify-post-middle-btn__title">Modifier l'image</p>
                     </div>
-                    <button aria-label="bouton ajouter une vidéo youtube" class="create-post-middle-btn">
-                        <fontAwesome icon="circle-play" class="create-post-middle-btn__icon"/>
-                        <p class="create-post-middle-btn__title">Modifier la vidéo via Youtube</p>
+                    <button aria-label="bouton ajouter une vidéo youtube" class="modify-post-middle-btn">
+                        <fontAwesome icon="circle-play" class="modify-post-middle-btn__icon"/>
+                        <p class="modify-post-middle-btn__title">Modifier la vidéo via Youtube</p>
                     </button>
                 </div>
-                <span class="create-post-line"></span>
-                <div class="create-post-bottom">
-                    <button type="submit" name="publication" id="publication" class="create-post-bottom-btn">Publier</button>
+                <span class="modify-post-line"></span>
+                <div class="modify-post-bottom">
+                    <button type="submit" name="publication" id="publication" class="modify-post-bottom-btn">Publier</button>
                 </div>
             </form>
         </div>
@@ -29,17 +29,17 @@
     <div v-if="messages.length == 0" class="nothing">Il n'y a pas de publications pour l'instant !</div>
     <div v-else v-for="message in messages" :key="message.id" class="post">
         <div class="post-top">
-            <RouterLink to="/profil" class="post-photoprofil">
+            <div class="post-photoprofil">
                 <img :src="message.user.avatar" alt="photo-profil" class="post-photoprofil__img"/>
-            </RouterLink>
+            </div>
             <div class="post-informations">
-                <RouterLink to="/profil" class="post-name">{{ message.user.firstname }} {{ message.user.lastname }}</RouterLink>
+                <div class="post-name">{{ message.user.firstname }} {{ message.user.lastname }}</div>
                 <p class="post-titre-poste">{{ message.user.job }}</p>
                 <p class="post-date">{{ dateTime(message.post.date) }}</p>
             </div>
         </div>
         <div v-if="this.userRole == 'administrateur' || message.post.userId == this.userId" class="post-modsup">
-            <p @click="modifyPublication(message.post._id, message.post.content)" class="post-modifier">Modifier</p>
+            <p @click="modifyPublication(message.post._id, message.post.content, message.post.imageUrl)" class="post-modifier">Modifier</p>
             <p @click="delPublication(message.post._id)" class="post-supprimer">Supprimer</p>
         </div>
         <div class="post-middle">
@@ -56,25 +56,24 @@
                 <p class="post-middle-like__number">{{ message.post.likes }}</p>
             </div>
             <div class="post-middle-comment">
-                <p class="post-middle-comment__number">56</p>
-                <fontAwesome icon="message" class="post-middle-like__icon"/>
+                <p class="post-middle-comment__number">{{ message.post.commentNumber }}</p>
+                <fontAwesome @click="addCommentClick" icon="message" class="post-middle-like__icon"/>
             </div>
         </div>
         <textarea rows="1" name="commentaire" id="commentaire" class="post-bottom__input" placeholder="Ajouter un commentaire" aria-label="Ajouter votre commentaire"></textarea>
-        <div class="post-comment">
-            <RouterLink to="/profil" class="post-photoprofil">
+        <!-- <div class="post-comment">
+            <div class="post-photoprofil">
                 <img src="../assets/photoprofil.jpg" alt="photo-profil" class="post-photoprofil__img"/>
-            </RouterLink>
+            </div>
             <div class="post-comment-insertgrey">
                 <div class="comment-supp">
                     <p class="comment-supprimer">Supprimer</p>
                 </div>
-                <RouterLink to="/profil" class="post-comment__name">Aurélien Dehaine</RouterLink>
-                <p class="post-comment__text">Magnifique témoignage ; si illustrant, si vrai... si courageux et fort.
-                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Labore voluptatibus fugit eaque illo nesciunt architecto odio ipsa numquam omnis magni! Ad sunt illo provident voluptatibus. Excepturi suscipit autem ab magnam?
+                <div class="post-comment__name">{{ message.comment.firsname }} {{ message.comment.comment }}</div>
+                <p class="post-comment__text">{{ message.comment.content }}
                 </p>
             </div>
-        </div>
+        </div>-->
     </div>
 </template>
 
@@ -94,22 +93,24 @@ export default {
             modifyPostContent: "",
             inputFile: {},
             messages: [],
+            getImageUrl: "",
             userId: "",
             userRole: "",
             getIdPost: "",
         }
     },
     methods: {
-        handleFileUpload(e){
+        handleFileModifyUpload(e){
             this.inputFile = {
                 name: e.target.files[0].name,
                 data: e.target.files[0]
             };
+            console.log(e.target.files[0].name);
         },
         modifyPublicationPic(){
-            document.querySelector('.create-post-middle-input').click();
+            document.querySelector('.modify-post-middle-input').click();
         },
-        modifyPublication(value1, value2) {
+        modifyPublication(value1, value2, value3) {
             if (!this.modification) {
                 this.modification = true;
             } else {
@@ -117,6 +118,7 @@ export default {
             }
             this.getIdPost = value1;
             this.modifyPostContent = value2;
+            this.getImageUrl = value3;
         },
         delPublication(value){
             axios.delete("http://localhost:3000/api/auth/posts/" + value, { headers:{ "Authorization": "Bearer " + localStorage.getItem("token")}})
@@ -135,7 +137,6 @@ export default {
             let post = {
                 content: this.modifyPostContent,
             };
-            
             let formData = new FormData();
             formData.append('post', JSON.stringify(post));
             if (this.inputFile.name != null){ 
@@ -143,12 +144,15 @@ export default {
             }
             axios.put("http://localhost:3000/api/auth/posts/" + this.getIdPost, formData, { headers:{ "Authorization": "Bearer " + localStorage.getItem("token")}})
                 .then((response) => {
-                    this.imageUrl = response.data.imageUrl;
+                    this.getImageUrl = response.data.imageUrl;
                     this.content = this.modifyPostContent;
                     this.modification = false;
                     router.go();
                     })
                 .catch(error => alert("Erreur : " + error));
+        },
+        addCommentClick(e){
+            e.target.closest('.post').querySelector('.post-bottom__input').focus();
         }
     },
     mounted() {
@@ -180,7 +184,7 @@ export default {
 </script>
 
 <style scoped>
-.create-post{
+.modify-post{
     inset: 0px;
     background-color: #4e516660;
     position: fixed;
@@ -191,48 +195,48 @@ export default {
     justify-content: center;
     align-items: center;    
 }
-.create-post-window{
+.modify-post-window{
     background-color: white;
     border-radius: 20px;
 }
-.create-post-top{
+.modify-post-top{
     display: flex;
     align-items: center;
 }
-.create-post-top__title{
+.modify-post-top__title{
     width: 93%;
     text-align: center;
     font-weight: bold;
 }
-.create-post-top__close{
+.modify-post-top__close{
     height: 25px;
     cursor: pointer;
 }
-.create-post-line{
+.modify-post-line{
     display: block;
     background-color: #d1d2d6;
     height:1.5px;
     width: 100%;
 }
-.create-post-bottom{
+.modify-post-bottom{
     display: flex;
     justify-content: center;
 }
-.create-post-middle{
+.modify-post-middle{
     padding:30px 60px;
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
     max-width: 480px;
 }
-.create-post-middle__text{
+.modify-post-middle__text{
     min-width: 480px;
     min-height:42px;
     max-height:500px;
     border-radius: 8px;
     border: 0.5px solid #4E5166;
 }
-.create-post-middle-btn{
+.modify-post-middle-btn{
     color: black;
     height: 40px;
     width:calc(50% - 15px);
@@ -252,14 +256,14 @@ input[type='file']{
     width: 1px;
     z-index: -5;
 }
-.create-post-middle-btn:hover{
+.modify-post-middle-btn:hover{
     background-color: #4E5166;
     color: white;
     transition: 0.2s linear;
-}.create-post-middle-btn__title{
+}.modify-post-middle-btn__title{
     font-size: 0.8rem;
 }
-.create-post-bottom-btn{
+.modify-post-bottom-btn{
     cursor: pointer;
     padding: 10px 45px;
     font-weight: bold;
@@ -269,10 +273,10 @@ input[type='file']{
     border: none;
     margin: 13px;
 }
-.create-post-middle-btn__icon{
+.modify-post-middle-btn__icon{
     width: 15%;
 }
-.create-post-bottom-btn:hover{
+.modify-post-bottom-btn:hover{
     box-shadow: 1px 1px 10px #FD2D01;
     transition: 0.2s linear;
 }
@@ -287,10 +291,11 @@ input[type='file']{
     display: flex;
     flex-direction: column;
     max-width: 570px;
-    margin: 25px auto;
+    margin: 15px auto;
     border-radius: 30px;
     border: 0.5px solid #4E5166;
     padding:25px;
+    box-shadow: 2px 3px 8px #d0d1d6;
 }
 .post-top{
     display: flex;
@@ -371,7 +376,7 @@ input[type='file']{
 .post-bottom__input{
     min-width: 560px;
     max-width: 90%;
-    min-height:42px;
+    min-height:22px;
     max-height:500px;
     text-align: left;
     padding:10px 0 10px 10px;

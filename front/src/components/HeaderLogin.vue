@@ -108,6 +108,6 @@ export default {
 .header-nav-btn__title{
     text-align: center;
     margin: 0;
-    margin-top: 7px;
+    margin-top: 9px;
 }
 </style>

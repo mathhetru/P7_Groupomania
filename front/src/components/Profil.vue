@@ -99,7 +99,6 @@ export default {
                 lastname: this.lastNameUpdate,
                 job: this.jobUpdate
             };
-            
             let formData = new FormData();
             formData.append('user', JSON.stringify(user));
             if (this.inputFile.name != null){ 
