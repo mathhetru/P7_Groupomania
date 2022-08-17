@@ -74,9 +74,7 @@ export default {
             let post = {
                 userId: localStorage.getItem("userId"),
                 date: Date.now(),
-                content: this.contentPost,
-                likes: 0,
-                usersLiked: null,
+                content: this.contentPost
             };
             
             let formData = new FormData();
@@ -88,7 +86,7 @@ export default {
                 .then((response) => {
                     router.go();
                     })
-                .catch(error => alert("Erreur : ajoutez du texte en plus de la photo " + error));
+                .catch(error => alert(error + "Erreur : veuillez ajouter du texte en plus de l'image"));
         }
     },
     mounted() {

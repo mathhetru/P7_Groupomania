@@ -98,20 +98,22 @@ exports.deletePost = (req, res, next) => {
 };
 
 exports.likedPost = (req, res, next) => {
+  console.log(req.params.id);
   Post.findOne({ _id: req.params.id })
   .then((post) => {
-    if (req.body.like == 1 && !post.usersLiked.includes(req.body.userId)) {
+    console.log(post._id);
+    if (!post.usersLiked.includes(req.auth.userId)) {
       Post.updateOne(
         { _id: req.params.id },
-        { $inc: { likes: 1 }, $push: { usersLiked: req.body.userId } }
+        { $inc: { likes: 1 }, $push: { usersLiked: req.auth.userId }}
       )
       .then(() => res.status(200).json({ message: "Vous avez liké la publication ! :)" }))
       .catch((error) => res.status(400).json({ error }));
     } 
     else {
       Post.updateOne(
-      { id: req.params.id },
-      { $inc: { likes: -1 }, $pull: { usersLiked: req.body.userId } } 
+      { _id: req.params.id },
+      { $inc: { likes: -1 }, $pull: { usersLiked: req.auth.userId } } 
       )
       .then(() => res.status(200).json({ message: "Vous avez retiré un like à la publication ! :(" }))
       .catch((error) => res.status(400).json({ error }));

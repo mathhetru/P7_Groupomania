@@ -51,17 +51,18 @@
             </div>
         </div>
         <div class="post-middle-like-comment">
-            <div class="post-middle-like">
-                <fontAwesome icon="thumbs-up" class="post-middle-like__icon"/>
-                <p class="post-middle-like__number">{{ message.post.likes }}</p>
+            <div @click="addLike(message.post._id)" class="post-middle-like">
+                <fontAwesome v-if="message.post.usersLiked.includes(this.userId)" icon="thumbs-up" class="post-middle-like__iconRED"/>
+                <fontAwesome v-else icon="thumbs-up" class="post-middle-like__icon"/>
+                <p>{{ message.post.likes }}</p>
             </div>
             <div class="post-middle-comment">
-                <p class="post-middle-comment__number">{{ message.post.commentNumber }}</p>
+                <p>{{ message.post.commentNumber }}</p>
                 <fontAwesome @click="addCommentClick" icon="message" class="post-middle-like__icon"/>
             </div>
         </div>
         <textarea rows="1" name="commentaire" id="commentaire" class="post-bottom__input" placeholder="Ajouter un commentaire" aria-label="Ajouter votre commentaire"></textarea>
-        <!-- <div class="post-comment">
+        <div class="post-comment">
             <div class="post-photoprofil">
                 <img src="../assets/photoprofil.jpg" alt="photo-profil" class="post-photoprofil__img"/>
             </div>
@@ -69,11 +70,11 @@
                 <div class="comment-supp">
                     <p class="comment-supprimer">Supprimer</p>
                 </div>
-                <div class="post-comment__name">{{ message.comment.firsname }} {{ message.comment.comment }}</div>
-                <p class="post-comment__text">{{ message.comment.content }}
+                <div class="post-comment__name">{{ message.user.firstname }} {{ message.user.lastname }}</div>
+                <p class="post-comment__text">
                 </p>
             </div>
-        </div>-->
+        </div>
     </div>
 </template>
 
@@ -96,7 +97,7 @@ export default {
             getImageUrl: "",
             userId: "",
             userRole: "",
-            getIdPost: "",
+            getIdPost: ""
         }
     },
     methods: {
@@ -105,30 +106,29 @@ export default {
                 name: e.target.files[0].name,
                 data: e.target.files[0]
             };
-            console.log(e.target.files[0].name);
         },
         modifyPublicationPic(){
             document.querySelector('.modify-post-middle-input').click();
         },
-        modifyPublication(value1, value2, value3) {
+        modifyPublication(idPostToModify, contentToModify, imageToModify) {
             if (!this.modification) {
                 this.modification = true;
             } else {
                 this.modification = false;
             }
-            this.getIdPost = value1;
-            this.modifyPostContent = value2;
-            this.getImageUrl = value3;
+            this.getIdPost = idPostToModify;
+            this.modifyPostContent = contentToModify;
+            this.getImageUrl = imageToModify;
         },
-        delPublication(value){
-            axios.delete("http://localhost:3000/api/auth/posts/" + value, { headers:{ "Authorization": "Bearer " + localStorage.getItem("token")}})
+        delPublication(idPostDel){
+            axios.delete("http://localhost:3000/api/auth/posts/" + idPostDel, { headers:{ "Authorization": "Bearer " + localStorage.getItem("token")}})
                 .then(() => {
                     router.go();
                     })
                 .catch(error => alert("Erreur : " + error));
         },
-        dateTime(value) {
-            var date = moment(value);
+        dateTime(dateValue) {
+            var date = moment(dateValue);
             date.locale('fr');
             return date.format("LLL");
         },
@@ -151,9 +151,17 @@ export default {
                     })
                 .catch(error => alert("Erreur : " + error));
         },
+        addLike(idPost){
+            console.log(idPost);
+            axios.put("http://localhost:3000/api/auth/posts/likes/" + idPost, {}, { headers:{ "Authorization": "Bearer " + localStorage.getItem("token")}})
+                .then((response) => {
+                    router.go();
+                    })
+                .catch(error => alert(error));
+        },
         addCommentClick(e){
             e.target.closest('.post').querySelector('.post-bottom__input').focus();
-        }
+        },
     },
     mounted() {
         axios.get("http://localhost:3000/api/auth/posts", { headers:{ "Authorization": "Bearer " + localStorage.getItem("token")}})
@@ -367,10 +375,14 @@ input[type='file']{
 .post-middle-like > p, .post-middle-comment > p{
     margin:0 10px;
 }
-.post-middle-like__icon, .post-middle-like__icon{
+.post-middle-like__icon{
     font-size: 1.5rem;
 }
-.post-middle-like__icon:hover, .post-middle-like__icon:hover{
+.post-middle-like__iconRED{
+    font-size: 1.5rem;
+    color:#FD2D01;
+}
+.post-middle-like__icon:hover{
     color:#FD2D01;
 }
 .post-bottom__input{

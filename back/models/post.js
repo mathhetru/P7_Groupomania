@@ -5,11 +5,10 @@ const postSchema = mongoose.Schema({
     date: { type: Date, required: true },
     content: { type: String, required: true },
     imageUrl: { type: String, required: false }, 
-    likes: { type: Number, required: true },
-    usersLiked: [{ type: String, required: true }],
-    commentNumber: { type: Number, required: true },
-    comment: { type: String, required: false },
-    usersCommented: [{ type: String, required: true }]
+    likes: { type: Number, default: 0, required: true },
+    usersLiked: { type : Array , "default" : [], required: true },
+    commentNumber: { type: Number, default: 0, required: true },
+    comments: {  type : Array , "default" : [], required: false }
 }); 
 
 module.exports = mongoose.model('Post', postSchema); 
