@@ -61,17 +61,20 @@
                 <fontAwesome @click="addCommentClick" icon="message" class="post-middle-like__icon"/>
             </div>
         </div>
-        <textarea rows="1" name="commentaire" id="commentaire" class="post-bottom__input" placeholder="Ajouter un commentaire" aria-label="Ajouter votre commentaire"></textarea>
-        <div class="post-comment">
+        <form @submit="addComment($event, message.post._id)" class="post-bottom-comment">
+            <textarea rows="1" name="commentaire" id="commentaire" class="post-bottom__input" placeholder="Ajouter un commentaire" aria-label="Ajouter votre commentaire"></textarea>
+            <button type="submit" name="sendComment" id="sendComment" class="post-bottom__btn">Envoyer</button>
+        </form>
+        <div v-show="message.post.commentNumber != 0" v-for="comment in message.comments" class="post-comment">
             <div class="post-photoprofil">
-                <img src="../assets/photoprofil.jpg" alt="photo-profil" class="post-photoprofil__img"/>
+                <img :src="comment.user.avatar" alt="photo-profil" class="post-photoprofil__img"/>
             </div>
             <div class="post-comment-insertgrey">
                 <div class="comment-supp">
-                    <p class="comment-supprimer">Supprimer</p>
+                    <p @click="delComment(message.post._id)"  class="comment-supprimer">Supprimer</p>
                 </div>
-                <div class="post-comment__name">{{ message.user.firstname }} {{ message.user.lastname }}</div>
-                <p class="post-comment__text">
+                <div class="post-comment__name">{{ comment.user.firstname }} {{ comment.user.lastname }}</div>
+                <p class="post-comment__text">{{  comment.comment.commentContent}}
                 </p>
             </div>
         </div>
@@ -152,7 +155,6 @@ export default {
                 .catch(error => alert("Erreur : " + error));
         },
         addLike(idPost){
-            console.log(idPost);
             axios.put("http://localhost:3000/api/auth/posts/likes/" + idPost, {}, { headers:{ "Authorization": "Bearer " + localStorage.getItem("token")}})
                 .then((response) => {
                     router.go();
@@ -161,6 +163,25 @@ export default {
         },
         addCommentClick(e){
             e.target.closest('.post').querySelector('.post-bottom__input').focus();
+        },
+        addComment(e, idPost){
+            let form = e.target
+            let textarea = form.querySelector('.post-bottom__input');
+            axios.put("http://localhost:3000/api/auth/posts/comments/" + idPost, {"comment" : textarea.value}, { headers:{ "Authorization": "Bearer " + localStorage.getItem("token")}})
+                .then((response) => {
+                    /*var commentDatas = response.data.reverse();
+                    console.log(commentDatas);
+                    this.comments = commentDatas;*/
+                    router.go();
+                    })
+                .catch(error => alert(error));
+        },
+        delComment(idPostCommentDel){
+            axios.put("http://localhost:3000/api/auth/posts/comments/" + idPostCommentDel, { headers:{ "Authorization": "Bearer " + localStorage.getItem("token")}})
+                .then(() => {
+                    router.go();
+                    })
+                .catch(error => alert("Erreur : " + error));
         },
     },
     mounted() {
@@ -178,6 +199,11 @@ export default {
                 } 
                 else {
                     this.messages = datas;
+                    // for (let i=0; i < datas.length; i++) {
+                    //     var data = datas[i];
+                    //     this.comments = data.post.comments;
+                    //     console.log(this.comments);
+                    // };
                 }
             })
             .catch(error => alert("Erreur : " + error));
@@ -385,9 +411,12 @@ input[type='file']{
 .post-middle-like__icon:hover{
     color:#FD2D01;
 }
+.post-bottom-comment{
+    display: flex;
+    justify-content: space-between;
+}
+
 .post-bottom__input{
-    min-width: 560px;
-    max-width: 90%;
     min-height:22px;
     max-height:500px;
     text-align: left;
@@ -396,7 +425,18 @@ input[type='file']{
     border: 0.5px solid #4E5166;
     text-decoration: none;
     color: #4E5166;
-    width: 100%;
+    min-width: 78%;
+
+}
+.post-bottom__btn{
+    height: 40px;
+    cursor: pointer;
+    padding: 10px 25px;
+    font-weight: bold;
+    color: white;
+    background-color: #FD2D01;
+    border-radius: 20px;
+    border: none;
 }
 .post-comment{
     margin-top: 25px;

@@ -8,7 +8,7 @@ const postSchema = mongoose.Schema({
     likes: { type: Number, default: 0, required: true },
     usersLiked: { type : Array , "default" : [], required: true },
     commentNumber: { type: Number, default: 0, required: true },
-    comments: {  type : Array , "default" : [], required: false }
+    comments: {  type : Array , "default" : [], required:  true }
 }); 
 
 module.exports = mongoose.model('Post', postSchema); 

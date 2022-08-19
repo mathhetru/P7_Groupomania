@@ -1,6 +1,8 @@
 const Post = require("../models/post");
 const fs = require("fs");
 const User = require("../models/user");
+const mongoose = require('mongoose'); 
+var newId = mongoose.Types.ObjectId(); 
 
 exports.createPost = (req, res, next) => {
   const postObject = JSON.parse(req.body.post);
@@ -31,11 +33,26 @@ exports.getAllPost = (req, res, next) => {
     Post.find() 
     .then(async (posts) => {
       for(let i=0; i < posts.length; i++) {
+        const commentsList = [];
         const post = posts[i];
         var userId = post.userId;
         var user = await User.findOne({_id: userId});
+        for(let j = 0; j < post.comments.length; j++) {
+          const comment = post.comments[j];
+          var commentUserId = comment.commentUser;
+          var commentUser = await User.findOne({_id: commentUserId});
+          commentsList.push({
+            comment: comment,
+            user: {
+              firstname: commentUser.firstname,
+              lastname: commentUser.lastname,
+              avatar: commentUser.avatar,
+            }
+          });
+        }
         postsList.push({
           post: post,
+          comments: commentsList,
           user: {
             firstname: user.firstname,
             lastname: user.lastname,
@@ -98,10 +115,8 @@ exports.deletePost = (req, res, next) => {
 };
 
 exports.likedPost = (req, res, next) => {
-  console.log(req.params.id);
   Post.findOne({ _id: req.params.id })
   .then((post) => {
-    console.log(post._id);
     if (!post.usersLiked.includes(req.auth.userId)) {
       Post.updateOne(
         { _id: req.params.id },
@@ -119,4 +134,43 @@ exports.likedPost = (req, res, next) => {
       .catch((error) => res.status(400).json({ error }));
     }
 });
+};
+
+exports.commentedPost = (req, res, next) => {
+  Post.findOne({_id: req.params.id})
+  .then((post) => {
+    let commentObject = {
+      commentId: newId,
+      commentUser: req.auth.userId,
+      commentContent: req.body.comment
+    };
+    console.log(commentObject);
+    Post.updateOne(
+      { _id: req.params.id },
+      { $inc: { commentNumber: 1 }, 
+        $push: { comments: commentObject }}
+    )
+    .then(() => res.status(200).json({ message: "Vous avez commenté la publication ! :)" }))
+    .catch((error) => res.status(400).json({ error }));
+  })
+  .catch((error) => res.status(400).json({error: error}));
+};
+
+exports.deleteComment = (req, res, next) => {
+  Post.findOne({_id: req.params.id})
+  .then((post) => {
+    let commentObject = {
+      _id: ObjectID,
+      commentUser: req.auth.userId,
+      commentContent: req.body.comment
+    };
+    Post.updateOne(
+      { _id: req.params.id },
+      { $inc: { commentNumber: -1 }, 
+        $pull: { comments: commentObject }}
+    )
+    .then(() => res.status(200).json({ message: "Vous avez supprimé votre commentaire de la publication ! :(" }))
+    .catch((error) => res.status(400).json({ error }));
+  })
+  .catch((error) => res.status(400).json({error: error}));
 };
