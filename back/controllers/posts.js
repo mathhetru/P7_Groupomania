@@ -2,7 +2,6 @@ const Post = require("../models/post");
 const fs = require("fs");
 const User = require("../models/user");
 const mongoose = require('mongoose'); 
-var newId = mongoose.Types.ObjectId(); 
 
 exports.createPost = (req, res, next) => {
   const postObject = JSON.parse(req.body.post);
@@ -137,10 +136,11 @@ exports.likedPost = (req, res, next) => {
 };
 
 exports.commentedPost = (req, res, next) => {
+  var newId = mongoose.Types.ObjectId();
   Post.findOne({_id: req.params.id})
   .then((post) => {
     let commentObject = {
-      commentId: newId,
+      commentId: newId.toString(),
       commentUser: req.auth.userId,
       commentContent: req.body.comment
     };
@@ -157,17 +157,12 @@ exports.commentedPost = (req, res, next) => {
 };
 
 exports.deleteComment = (req, res, next) => {
-  Post.findOne({_id: req.params.id})
+  Post.findOne({_id: req.params.idPost})
   .then((post) => {
-    let commentObject = {
-      _id: ObjectID,
-      commentUser: req.auth.userId,
-      commentContent: req.body.comment
-    };
     Post.updateOne(
-      { _id: req.params.id },
+      { _id: req.params.idPost },
       { $inc: { commentNumber: -1 }, 
-        $pull: { comments: commentObject }}
+        $pull: { comments: { commentId: req.params.idComment }}}
     )
     .then(() => res.status(200).json({ message: "Vous avez supprimé votre commentaire de la publication ! :(" }))
     .catch((error) => res.status(400).json({ error }));

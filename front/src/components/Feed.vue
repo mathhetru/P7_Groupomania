@@ -18,6 +18,10 @@
                         <fontAwesome icon="circle-play" class="create-post-middle-btn__icon"/>
                         <p class="create-post-middle-btn__title">Ajouter une vidéo via Youtube</p>
                     </button>
+                    <div v-if="this.inputFile.name != null" class="create-post-middle-file">
+                        <fontAwesome @click="delPublicationPic" icon="circle-xmark" class="create-post-middle-btn-file__icon"/>
+                        <p class="create-post-middle-file__text">{{ this.inputFile.name }}</p>
+                    </div>
                 </div>
                 <span class="create-post-line"></span>
                 <div class="create-post-bottom">
@@ -61,6 +65,10 @@ export default {
         },
         addPublicationPic(){
             document.querySelector('.create-post-middle-input').click();
+        },
+        delPublicationPic() {
+            this.inputFile.name = null;
+            this.inputFileName = this.inputFile.name;
         },
         createPublication() {
             if (!this.publication) {
@@ -166,6 +174,9 @@ export default {
     align-items: center;
     cursor: pointer;
 }
+.create-post-middle-btn__icon{
+    width: 15%;
+}
 input[type='file']{
     position: absolute;
     margin-top: 3px;
@@ -181,6 +192,23 @@ input[type='file']{
 }.create-post-middle-btn__title{
     font-size: 0.8rem;
 }
+.create-post-middle-file{
+    display: flex;
+    align-items: center;
+    color: black;
+}
+.create-post-middle-btn-file__icon{
+    cursor: pointer;
+    margin-left: 10px;
+    font-size: 0.rem;
+}
+.create-post-middle-btn-file__icon:hover{
+    color:#FD2D01;
+}
+.create-post-middle-file__text{
+    margin: 5px 10px;
+    font-size: 0.8rem;
+}
 .create-post-bottom-btn{
     cursor: pointer;
     padding: 10px 45px;
@@ -190,9 +218,6 @@ input[type='file']{
     border-radius: 5px;
     border: none;
     margin: 13px;
-}
-.create-post-middle-btn__icon{
-    width: 15%;
 }
 .create-post-bottom-btn:hover{
     box-shadow: 1px 1px 10px #FD2D01;
@@ -237,4 +262,5 @@ input[type='file']{
 .main-create-post-btn__title{
     margin-left: 20px;
 }
+
 </style>

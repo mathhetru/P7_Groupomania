@@ -18,6 +18,10 @@
                         <fontAwesome icon="circle-play" class="modify-post-middle-btn__icon"/>
                         <p class="modify-post-middle-btn__title">Modifier la vidéo via Youtube</p>
                     </button>
+                    <div v-if="this.inputFile.name != null" class="modify-post-middle-file">
+                        <fontAwesome @click="delModifyPublicationPic" icon="circle-xmark" class="modify-post-middle-btn-file__icon"/>
+                        <p class="modify-post-middle-file__text">{{ this.inputFile.name }}</p>
+                    </div>
                 </div>
                 <span class="modify-post-line"></span>
                 <div class="modify-post-bottom">
@@ -70,8 +74,8 @@
                 <img :src="comment.user.avatar" alt="photo-profil" class="post-photoprofil__img"/>
             </div>
             <div class="post-comment-insertgrey">
-                <div class="comment-supp">
-                    <p @click="delComment(message.post._id)"  class="comment-supprimer">Supprimer</p>
+                <div v-if="this.userRole == 'administrateur' || comment.comment.commentUser == this.userId" class="comment-supp">
+                    <p @click="delComment(message.post._id, comment.comment.commentId)"  class="comment-supprimer">Supprimer</p>
                 </div>
                 <div class="post-comment__name">{{ comment.user.firstname }} {{ comment.user.lastname }}</div>
                 <p class="post-comment__text">{{  comment.comment.commentContent}}
@@ -100,8 +104,7 @@ export default {
             getImageUrl: "",
             userId: "",
             userRole: "",
-            getIdPost: ""
-        }
+            getIdPost: ""        }
     },
     methods: {
         handleFileModifyUpload(e){
@@ -112,6 +115,10 @@ export default {
         },
         modifyPublicationPic(){
             document.querySelector('.modify-post-middle-input').click();
+        },
+        delModifyPublicationPic() {
+            this.inputFile.name = null;
+            this.inputFileName = this.inputFile.name;
         },
         modifyPublication(idPostToModify, contentToModify, imageToModify) {
             if (!this.modification) {
@@ -176,8 +183,8 @@ export default {
                     })
                 .catch(error => alert(error));
         },
-        delComment(idPostCommentDel){
-            axios.put("http://localhost:3000/api/auth/posts/comments/" + idPostCommentDel, { headers:{ "Authorization": "Bearer " + localStorage.getItem("token")}})
+        delComment(idPostCommentDel, idComment){
+            axios.delete("http://localhost:3000/api/auth/posts/" + idPostCommentDel + "/comments/" + idComment, { headers:{ "Authorization": "Bearer " + localStorage.getItem("token")}})
                 .then(() => {
                     router.go();
                     })
@@ -314,6 +321,23 @@ input[type='file']{
     box-shadow: 1px 1px 10px #FD2D01;
     transition: 0.2s linear;
 }
+.modify-post-middle-file{
+    display: flex;
+    align-items: center;
+    color: black;
+}
+.modify-post-middle-btn-file__icon{
+    cursor: pointer;
+    margin-left: 10px;
+    font-size: 0.rem;
+}
+.modify-post-middle-btn-file__icon:hover{
+    color:#FD2D01;
+}
+.modify-post-middle-file__text{
+    margin: 5px 10px;
+    font-size: 0.8rem;
+}
 .nothing{
     max-width: 570px;
     margin: 45px auto;
@@ -437,6 +461,11 @@ input[type='file']{
     background-color: #FD2D01;
     border-radius: 20px;
     border: none;
+}
+.post-bottom__btn:hover{
+    background-color: #4E5166;
+    color: white;
+    transition: 0.2s linear;
 }
 .post-comment{
     margin-top: 25px;
