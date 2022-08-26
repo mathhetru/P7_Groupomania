@@ -13,6 +13,7 @@ import SignUp from "../components/SignUp.vue";
 </template>
 
 <style scoped>
+/* LAPTOP */
 #header{
     position: sticky;
     max-width: 1024px;
@@ -26,5 +27,21 @@ import SignUp from "../components/SignUp.vue";
     max-width: 1024px;
     margin: auto;
     padding-top: 20px;
+}
+
+/* TABLET */
+@media screen and (max-width: 1100px) {
+    #header{
+      margin: 0 50px;
+    }
+}
+
+/* MOBILE */
+@media screen and (max-width: 425px) {
+  #header{
+    flex-direction: column;
+    height: 130px;
+    margin-top: 30px;
+  }
 }
 </style>

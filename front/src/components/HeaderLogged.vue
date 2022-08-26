@@ -61,6 +61,8 @@ export default {
 </script>
 
 <style scoped>
+
+/* LAPTOP */ 
 .header-menu{
     z-index:3;
     position: absolute;
@@ -169,5 +171,43 @@ export default {
     text-align: center;
     margin: 0;
     margin-right: 10px;
+}
+
+/* TABLET */
+@media screen and (max-width: 768px) {
+    .header-nav-home{
+        display: none;
+    }
+    .header-nav{
+        justify-content: space-around;
+    }
+}
+
+/* MOBILE */ 
+@media screen and (max-width: 615px) {
+    .headerLogged-logo-form{
+        flex-direction: column;
+        justify-content: space-around;
+    }
+    .header-form{
+        margin-right:30px
+    }
+    .header__logo{
+        margin-bottom: 20px;
+    }
+    .header-nav{
+        justify-content: space-around;
+    }
+    .header-nav-home{
+        display: none;
+    }
+    .header-menu{
+        border-radius: 20px;
+        right: auto;
+        top: 210px;
+    }
+    .header-menu-panel{
+        width: 120px;
+    }
 }
 </style>

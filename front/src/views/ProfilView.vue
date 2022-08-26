@@ -35,4 +35,23 @@ import Publication from '../components/Publication.vue';
     height:1.5px;
     width: 100%;
 }
+
+/* TABLET */
+@media screen and (max-width: 1100px) {
+    #header{
+        margin: 0 50px;
+    }
+}
+
+/* MOBILE */
+@media screen and (max-width: 615px) {
+    #header{
+        flex-direction: column;
+        height: 190px;
+        margin: 30px 0;
+    }
+    .header-line{
+        margin-top:30px;
+    }
+}
 </style>

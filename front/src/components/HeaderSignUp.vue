@@ -71,6 +71,7 @@ export default {
 </script>
 
 <style scoped>
+/* LAPTOP */ 
 .header__logo{
     width: 60px;
 }
@@ -109,5 +110,12 @@ export default {
     text-align: center;
     margin: 0;
     margin-top: 9px;
+}
+
+/* TABLET */ 
+@media screen and (max-width: 425px) {
+    .header-nav{
+        width: 280px;
+    }
 }
 </style>

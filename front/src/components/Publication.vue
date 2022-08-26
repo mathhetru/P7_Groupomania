@@ -67,6 +67,9 @@
         </div>
         <form @submit="addComment($event, message.post._id)" class="post-bottom-comment">
             <textarea rows="1" name="commentaire" id="commentaire" class="post-bottom__input" placeholder="Ajouter un commentaire" aria-label="Ajouter votre commentaire"></textarea>
+            <button type="submit" name="sendComment" id="sendComment" class="post-bottom__btn_wi">
+                <fontAwesome icon="paper-plane"/>
+            </button>
             <button type="submit" name="sendComment" id="sendComment" class="post-bottom__btn">Envoyer</button>
         </form>
         <div v-show="message.post.commentNumber != 0" v-for="comment in message.comments" class="post-comment">
@@ -174,14 +177,19 @@ export default {
         addComment(e, idPost){
             let form = e.target
             let textarea = form.querySelector('.post-bottom__input');
-            axios.put("http://localhost:3000/api/auth/posts/comments/" + idPost, {"comment" : textarea.value}, { headers:{ "Authorization": "Bearer " + localStorage.getItem("token")}})
-                .then((response) => {
-                    /*var commentDatas = response.data.reverse();
-                    console.log(commentDatas);
-                    this.comments = commentDatas;*/
-                    router.go();
-                    })
-                .catch(error => alert(error));
+            if (textarea.value != "") {
+                axios.put("http://localhost:3000/api/auth/posts/comments/" + idPost, {"comment" : textarea.value}, { headers:{ "Authorization": "Bearer " + localStorage.getItem("token")}})
+                    .then((response) => {
+                        /*var commentDatas = response.data.reverse();
+                        console.log(commentDatas);
+                        this.comments = commentDatas;*/
+                        router.go();
+                        })
+                    .catch(error => alert(error));
+            } else {
+                e.preventDefault();
+                alert("Vous ne pouvez pas envoyer de commentaire vide, veuillez remplir le champ.")
+            }
         },
         delComment(idPostCommentDel, idComment){
             axios.delete("http://localhost:3000/api/auth/posts/" + idPostCommentDel + "/comments/" + idComment, { headers:{ "Authorization": "Bearer " + localStorage.getItem("token")}})
@@ -467,6 +475,22 @@ input[type='file']{
     color: white;
     transition: 0.2s linear;
 }
+.post-bottom__btn_wi{
+    display: none;
+    height: 40px;
+    cursor: pointer;
+    padding: 10px 25px;
+    font-weight: bold;
+    color: white;
+    background-color: #FD2D01;
+    border-radius: 20px;
+    border: none;
+}
+.post-bottom__btn_wi:hover{
+    background-color: #4E5166;
+    color: white;
+    transition: 0.2s linear;
+}
 .post-comment{
     margin-top: 25px;
     display:flex;
@@ -502,5 +526,14 @@ input[type='file']{
 .comment-supp > p:hover{
     font-weight: bolder;
     color: #FD2D01;
+}
+/* MOBILE */ 
+@media screen and (max-width: 425px) {
+    .post-bottom__btn{
+        display: none;
+    }
+    .post-bottom__btn_wi{
+        display: block;
+    }
 }
 </style>

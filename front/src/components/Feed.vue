@@ -70,7 +70,7 @@ export default {
             this.inputFile.name = null;
             this.inputFileName = this.inputFile.name;
         },
-        createPublication() {
+        createPublication(e) {
             if (!this.publication) {
                 this.publication = true;
             } else {

@@ -136,7 +136,7 @@ export default {
 </script>
 
 <style scoped>
-
+/* LAPTOP */
 .modify{
     inset: 0px;
     background-color: #4e516660;
@@ -190,7 +190,7 @@ export default {
     padding:0;
     font-size: 0.8rem;
     padding-left:15px;
-    width: 463px
+    width: calc(100% - 17px);
 }
 input[type='file']{
     position: absolute;
@@ -221,7 +221,8 @@ input[type='file']{
     background-color: #4E5166;
     color: white;
     transition: 0.2s linear;
-}.modify-middle-btn__title{
+}
+.modify-middle-btn__title{
     font-size: 0.8rem;
 }
 .modify-bottom-btn{
@@ -310,4 +311,57 @@ input[type='file']{
     background-color: #FD2D01;
     transition: 0.2s linear;
 }
+
+@media screen and (max-width: 1100px) {
+    .about{
+        margin: 0 50px;
+    }
+}
+
+/* TABLET */
+@media screen and (max-width: 768px) {
+    .about-modify-btn{
+        top: 25px;
+    }
+    .about-yourpublications{
+        text-align: center;
+        margin-top:15px;
+    }
+    .modify-top__close{
+        padding-right: 15px;    
+    }
+    .modify-middle-btn__icon{
+        margin-left: 10px;
+    }
+    .modify-middle-btn__title{
+        margin-left: 10px;
+    }
+}
+
+/* MOBILE */
+@media screen and (max-width: 610px) {
+    .about{
+        flex-direction: column;
+        align-items: center;
+    }
+    .about-informations{
+        margin: 20px 0;
+        text-align: center;
+    }
+    .about-info-name{
+        font-size:1.7rem;
+    }
+    .about-info-poste{
+        font-size:1.3rem;
+        margin-bottom: 0;
+    }
+    .about-modify-btn{
+        position: static;
+    }
+    .modify-middle{
+        padding: 30px;
+        width: 70vw;
+    }
+}
+
 </style>

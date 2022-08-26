@@ -136,6 +136,7 @@ export default {
 </script>
 
 <style scoped>
+/* LAPTOP */ 
 .signup {
     max-width: 1024px;
     margin: auto;
@@ -152,10 +153,6 @@ export default {
     font-weight: bold;
     font-size: 3.5rem;
 }
-.signup-insert-img{
-    animation: SlideDown 1.5s ease-in-out;
-    animation-iteration-count: infinite;
-}
 .signup-insert-msg:last-of-type{
     margin-bottom: 60px;
 }
@@ -165,12 +162,32 @@ export default {
 .p-red{
     color: #fbc8c8
 }
+
+/* IMAGE */ 
+.signup-insert-img{
+    animation: SlideDown 1.5s ease-in-out;
+    animation-iteration-count: infinite;
+}
+
+/* ANIMATION IMAGE */
+@keyframes SlideDown {
+    0% {
+        transform: translateY(15px);
+    }
+    50% {
+        transform: translateY(0px);
+    }
+    100% {
+        transform: translateY(15px);
+    }
+}
+
+/* FORM */
 .signup-container {
     box-shadow: 1px 1px 10px #FD2D01;
     padding: 40px;
     border-radius: 20px;
     margin-bottom: 70px;
-    width: 25%;
 }
 .signup-container-form{
     display: flex;
@@ -185,7 +202,7 @@ export default {
     margin:0;
 }
 .signup-container__input{
-    width: 234px;
+    width: calc(100% - 20px);
     font-weight: lighter;
     border-radius: 5px;
     border: 0.5px solid #FD2D01;
@@ -208,15 +225,69 @@ export default {
     margin:0;
 }
 
-@keyframes SlideDown {
-    0% {
-        transform: translateY(15px);
+@media screen and (max-width: 1024px) {
+    .signup{
+        margin: 60px 50px;
     }
-    50% {
-        transform: translateY(0px);
+}
+
+/* TABLET */
+@media screen and (max-width: 768px) {
+    .signup{
+        flex-direction: column;
+        margin-top: 10px;
     }
-    100% {
-        transform: translateY(15px);
+
+    /* WELCOME TEXT */
+    .signup-insert{
+        width: 90%;
+        text-align: center;
+    }
+
+    /* IMAGE */ 
+    .signup-insert-img{
+        width: 50%;
+    }
+
+    /* FORM */ 
+    .signup-container {
+        margin-top: 70px;
+        width: auto;
+    }
+}
+
+/* MOBILE */
+@media screen and (max-width: 425px) {
+    .signup{
+        flex-direction: column;
+        margin-top: 10px;
+    }
+
+    /* WELCOME TEXT */
+    .signup-insert{
+        margin-top: 30px;
+        width: 100%;
+        text-align: center;
+    }
+    .signup-insert-msg{
+        font-size: 2.3rem;
+    }
+
+    /* IMAGE */ 
+    .signup-insert-img{
+        width: 100%;
+    }
+
+    /* FORM */ 
+    .signup-container {
+        width: auto;
+        margin: 80px 30px;
+    }
+    .signup-container__title{
+        font-size: 2rem;
+    }
+    .signup-container__input{
+        width: calc(100% - 20px);
     }
 }
 </style>

@@ -27,4 +27,20 @@ import Login from "../components/Login.vue";
     margin: auto;
     padding-top: 20px;
 }
+
+/* TABLET */
+@media screen and (max-width: 1100px) {
+    #header{
+      margin: 0 50px;
+    }
+}
+
+/* MOBILE */
+@media screen and (max-width: 425px) {
+  #header{
+    flex-direction: column;
+    height: 130px;
+    margin-top: 30px;
+  }
+}
 </style>
