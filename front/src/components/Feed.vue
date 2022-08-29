@@ -14,10 +14,10 @@
                         <fontAwesome icon="camera" class="create-post-middle-btn__icon"/>
                         <p class="create-post-middle-btn__title">Ajouter une image</p>
                     </div>
-                    <button aria-label="bouton ajouter une vidéo youtube" class="create-post-middle-btn">
+                    <div aria-label="bouton ajouter une vidéo youtube" class="create-post-middle-btn">
                         <fontAwesome icon="circle-play" class="create-post-middle-btn__icon"/>
                         <p class="create-post-middle-btn__title">Ajouter une vidéo via Youtube</p>
-                    </button>
+                    </div>
                     <div v-if="this.inputFile.name != null" class="create-post-middle-file">
                         <fontAwesome @click="delPublicationPic" icon="circle-xmark" class="create-post-middle-btn-file__icon"/>
                         <p class="create-post-middle-file__text">{{ this.inputFile.name }}</p>
@@ -110,6 +110,7 @@ export default {
 
 <style scoped>
 
+/* FENETRE CREER UNE PUBLICATION */
 .create-post{
     inset: 0px;
     background-color: #4e516660;
@@ -223,6 +224,8 @@ input[type='file']{
     box-shadow: 1px 1px 10px #FD2D01;
     transition: 0.2s linear;
 }
+
+/* BTN CREER UNE PUBLICATION */
 .main-create-post{
     display: flex;
     align-items: center;
@@ -263,4 +266,34 @@ input[type='file']{
     margin-left: 20px;
 }
 
+
+/* MOBILE */
+@media screen and (max-width: 610px) {
+    .create-post-middle__text{
+        min-width: calc(100% - 6px);
+        max-width: calc(100% - 6px);
+        min-height:42px;
+        max-height:500px;
+    }
+    .create-post-top__close{
+        padding-right: 15px; 
+    }
+    .create-post-middle{
+        padding: 30px;
+        width: 70vw;
+        flex-direction: column;
+    }
+    .create-post-middle-btn{
+        width: 100%;
+        margin-top:15px;
+    }
+
+    /* BTN CREER UNE PUBLICATION */
+    .main-create-post{
+        width: 78vw;
+    }
+    .main-create-post-btn{
+        width: 72%;
+    }
+}
 </style>

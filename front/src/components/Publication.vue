@@ -233,6 +233,7 @@ export default {
 </script>
 
 <style scoped>
+/* FENETRE MODIFIER POST */
 .modify-post{
     inset: 0px;
     background-color: #4e516660;
@@ -352,6 +353,8 @@ input[type='file']{
     text-align: center;
     font-weight: bolder;
 }
+
+/* TOP OF PUBLICATION */
 .post{
     position: relative;
     display: flex;
@@ -411,6 +414,8 @@ input[type='file']{
     font-weight: bolder;
     color: #FD2D01;
 }
+
+/* PUBLICATION CONTENT */
 .post-middle-content-pict{
     margin:25px -25px;
     overflow: hidden;
@@ -443,11 +448,12 @@ input[type='file']{
 .post-middle-like__icon:hover{
     color:#FD2D01;
 }
+
+/* BTN LIKE ET COMMENT */
 .post-bottom-comment{
     display: flex;
     justify-content: space-between;
 }
-
 .post-bottom__input{
     min-height:22px;
     max-height:500px;
@@ -458,7 +464,6 @@ input[type='file']{
     text-decoration: none;
     color: #4E5166;
     min-width: 78%;
-
 }
 .post-bottom__btn{
     height: 40px;
@@ -491,6 +496,8 @@ input[type='file']{
     color: white;
     transition: 0.2s linear;
 }
+
+/* COMMENTAIRE */
 .post-comment{
     margin-top: 25px;
     display:flex;
@@ -527,13 +534,56 @@ input[type='file']{
     font-weight: bolder;
     color: #FD2D01;
 }
+
 /* MOBILE */ 
 @media screen and (max-width: 425px) {
+    /* TOP OF PUBLICATION */ 
+    .post{
+        width: 78vw;
+    }
+    .post-modsup{
+        display: flex;
+        justify-content: flex-end;
+        right: 20px;
+        top: 15px;
+    }
+    .post-modsup > p{
+        font-size: 0.6rem;
+        margin-left: 10px;
+    }
+    
+
+    /* PUBLICATION CONTENT */
+    .post-middle__text{
+        font-size: 0.9rem;
+    }
+
+    /* BTN LIKE ET COMMENT */
+    .post-bottom__input{
+        min-width: 78%;
+    }
     .post-bottom__btn{
         display: none;
     }
     .post-bottom__btn_wi{
         display: block;
+        padding: 10px 12px;
+    }
+
+    /* COMMENTAIRE */
+    .post-comment{
+        margin-top: 15px;
+    }
+    .post-photoprofil {
+        width: 50px;
+        height: 50px;
+    }
+    .post-comment-insertgrey{
+        width: 72%;
+        padding: 8px;
+    }
+    .comment-supp > p {
+        font-size: 0.6rem;
     }
 }
 </style>
