@@ -15,57 +15,7 @@
 <script>
 export default {
     name: 'HeaderLogin',
-    methods: {
-        /*login() {
-            var string = window.location.href;
-            var url = new URL(string);
-            
-            if (url.pathname == "/login") {
-                return {
-                    color: 'white',
-                    'background-color': '#FD2D01'
-                }
-            } else {
-                    return {
-                    color: '#FD2D01',
-                    'background-color': 'white'}
-                }
-            },
-        signup() {
-            var string = window.location.href;
-            var url = new URL(string);
-            
-            if (url.pathname == "/signup") {
-                return {
-                    color: 'white',
-                    'background-color': '#FD2D01'
-                }
-            } else {
-                    return {
-                    color: '#FD2D01',
-                    'background-color': 'white'}
-                }
-        },
-        loginC() {
-            var string = window.location.href;
-            var url = new URL(string);
-            
-            if (url.pathname == "/login") {
-                return 'header-nav-btn-hov'
-            } else {
-                return 'header-nav-btn'
-            }
-        },
-        signupC() {
-            var string = window.location.href;
-            var url = new URL(string);
-            
-            if (url.pathname == "/signup") {
-                return 'header-nav-btn-hov'
-            } else {
-                return 'header-nav-btn'
-            }
-        }*/
+    data() {
     }
 }
 </script>

@@ -180,9 +180,6 @@ export default {
             if (textarea.value != "") {
                 axios.put("http://localhost:3000/api/auth/posts/comments/" + idPost, {"comment" : textarea.value}, { headers:{ "Authorization": "Bearer " + localStorage.getItem("token")}})
                     .then((response) => {
-                        /*var commentDatas = response.data.reverse();
-                        console.log(commentDatas);
-                        this.comments = commentDatas;*/
                         router.go();
                         })
                     .catch(error => alert(error));
@@ -214,11 +211,6 @@ export default {
                 } 
                 else {
                     this.messages = datas;
-                    // for (let i=0; i < datas.length; i++) {
-                    //     var data = datas[i];
-                    //     this.comments = data.post.comments;
-                    //     console.log(this.comments);
-                    // };
                 }
             })
             .catch(error => alert("Erreur : " + error));

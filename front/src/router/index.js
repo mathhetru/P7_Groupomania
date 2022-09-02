@@ -26,17 +26,7 @@ const router = createRouter({
     {
       path: "/feed",
       name: "feed",
-      component: FeedView,/*
-      beforeEnter(to, from, next){
-        if ( to.name !== 'login' && !this.isloggedin ){
-          next({
-            path: 'login',
-            replace: true
-          })
-        } else {
-          next()
-        }
-      }*/
+      component: FeedView,
     },
     { 
       path: '/:pathMatch(.*)*', 
@@ -53,14 +43,6 @@ const router = createRouter({
       name: "IdProfil",
       component: ProfilView,
     }
-    /*{
-      path: "/about",
-      name: "about",
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import("../views/AboutView.vue"),
-    }*/,
   ],
 });
 
@@ -74,16 +56,5 @@ router.beforeEach((to, from, next) => {
     next();
   }
 });
-
-/*router.beforeEach((to, from, next) => {
-  if ( to.name !== 'login' && !this.isloggedin ){
-    next({
-      path: 'login',
-      replace: true
-    })
-  } else {
-    next();
-  }
-});*/
 
 export default router;

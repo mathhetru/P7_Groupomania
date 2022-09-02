@@ -266,7 +266,6 @@ input[type='file']{
     margin-left: 20px;
 }
 
-
 /* MOBILE */
 @media screen and (max-width: 610px) {
     .create-post-middle__text{
