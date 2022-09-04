@@ -14,10 +14,10 @@
                         <fontAwesome icon="camera" class="modify-post-middle-btn__icon"/>
                         <p class="modify-post-middle-btn__title">Modifier l'image</p>
                     </div>
-                    <button aria-label="bouton ajouter une vidéo youtube" class="modify-post-middle-btn">
+                    <div aria-label="bouton ajouter une vidéo youtube" class="modify-post-middle-btn">
                         <fontAwesome icon="circle-play" class="modify-post-middle-btn__icon"/>
                         <p class="modify-post-middle-btn__title">Modifier la vidéo via Youtube</p>
-                    </button>
+                    </div>
                     <div v-if="this.inputFile.name != null" class="modify-post-middle-file">
                         <fontAwesome @click="delModifyPublicationPic" icon="circle-xmark" class="modify-post-middle-btn-file__icon"/>
                         <p class="modify-post-middle-file__text">{{ this.inputFile.name }}</p>
@@ -576,6 +576,27 @@ input[type='file']{
     }
     .comment-supp > p {
         font-size: 0.6rem;
+    }
+
+    /* MODAL MODIFICATION */
+    .modify-post-middle{
+        flex-direction: column;
+        align-items: center;
+        width: 70vw;
+        padding: 30px;
+    }
+    .modify-post-middle-btn{
+        width: 70vw;
+        margin-top:15px;
+    }
+    .modify-post-middle__text{
+        min-width: calc(100% - 6px);
+        max-width: calc(100% - 6px);
+        min-height: 42px;
+        max-height: 500px;
+    }
+    .modify-post-top__close{
+        padding-right: 15px;    
     }
 }
 </style>
