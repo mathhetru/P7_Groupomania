@@ -14,9 +14,11 @@ NodeJs
 npm
 MongoDB Atlas
 ```
+
 ### Database
 
 Create a database named groupomania
+
 
 ### Clone and install
 
@@ -39,6 +41,7 @@ Install dependencies
 ```
 If you have any trouble, check and update every package with `npm install -g npm-check-updates`.
 
+
 ### Environment Variables
 
 To run this project, you will need to add the following environment variables to a .env file
@@ -57,12 +60,14 @@ Example:
     database="groupomania.azerty"
 ```
 
+
 ### Start the back
 
 ```bash
   cd ./back
   nodemon server or node server
 ```
+
 
 ### Start the front
 
