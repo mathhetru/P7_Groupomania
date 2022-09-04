@@ -11,6 +11,7 @@ Powered with :
 To run this project, you will need:
 ```
 NodeJs
+npm
 MongoDB Atlas
 ```
 ### Database
@@ -28,7 +29,7 @@ Clone the project
 Go to the project directory
 
 ```bash
-  cd P7-Groupomania
+  cd P7_Groupomania
 ```
 
 Install dependencies
@@ -36,12 +37,13 @@ Install dependencies
 ```bash
   npm install
 ```
+If you have any trouble, check and update every package with `npm install -g npm-check-updates`.
 
 ### Environment Variables
 
 To run this project, you will need to add the following environment variables to a .env file
 
-Create a `.env` file in `back` folder
+Create a `.env` file in `back` folder. Check `app.js` if you need more informations.
 
 `account` account name database  
 `mdp` password database
@@ -59,7 +61,7 @@ Example:
 
 ```bash
   cd ./back
-  nodemon server or npm start
+  nodemon server or node server
 ```
 
 ### Start the front
