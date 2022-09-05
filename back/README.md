@@ -1,5 +1,5 @@
 # P7 Groupomania #
-This is the back end server for Project 6 of the Web Developer path.
+This is the back end server for Project 7 of the Web Developer path.
 
 ### Back end Prerequisites ###
 You will need to have Node and `npm` installed locally on your machine.
