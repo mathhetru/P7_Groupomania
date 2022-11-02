@@ -71,11 +71,7 @@ export default {
             this.inputFileName = this.inputFile.name;
         },
         createPublication(e) {
-            if (!this.publication) {
-                this.publication = true;
-            } else {
-                this.publication = false;
-            }
+            this.publication = !this.publication;
         },
         createPost(e){
             e.preventDefault();
