@@ -1,7 +1,7 @@
 <script setup>
 import HeaderLogged from '../components/HeaderLogged.vue';
+import CreatePost from '../components/CreatePost.vue';
 import Feed from '../components/Feed.vue';
-import Publication from '../components/Publication.vue';
 </script>
 
 <template>
@@ -10,8 +10,8 @@ import Publication from '../components/Publication.vue';
     </header>
     <span class="header-line"></span>
     <main id="main">
+        <CreatePost/>
         <Feed/>
-        <Publication/>
     </main>
 </template>
 

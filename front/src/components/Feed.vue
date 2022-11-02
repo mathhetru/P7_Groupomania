@@ -1,107 +1,181 @@
 <template>
-    <div class="create-post" v-show="publication">
-        <div class="create-post-window">
-            <div class="create-post-top">
-                <p class="create-post-top__title">Créer une publication</p>
-                <fontAwesome icon="close" @click="createPublication" class="create-post-top__close"/>
+    <div class="modify-post" v-show="modification">
+        <div class="modify-post-window">
+            <div class="modify-post-top">
+                <p class="modify-post-top__title">Modifier votre publication</p>
+                <fontAwesome icon="close" @click="modifyPublication" class="modify-post-top__close"/>
             </div>
-            <span class="create-post-line"></span>
-            <form @submit="createPost">
-                <div class="create-post-middle" aria-label="Fenetre créer une publication">
-                    <textarea v-model="contentPost" placeholder="Votre publication..." name="content-text" rows="2" class="create-post-middle__text" aria-label="Ecrire son texte ici"></textarea>
-                    <div @click="addPublicationPic" class="create-post-middle-btn">
-                        <input type="file" aria-label="bouton ajouter une image" class="create-post-middle-input" @change="handleFileUpload">
-                        <fontAwesome icon="camera" class="create-post-middle-btn__icon"/>
-                        <p class="create-post-middle-btn__title">Ajouter une image</p>
+            <span class="modify-post-line"></span>
+            <form @submit="updatePublication">
+                <div class="modify-post-middle" aria-label="Fenetre créer une publication">
+                    <textarea v-model="modifyPostContent" placeholder="Votre publication..." name="content-text" rows="2" class="modify-post-middle__text" aria-label="Ecrire son texte ici"></textarea>
+                    <label for="modify-post-middle-input" class="modify-post-middle-btn">
+                        <input type="file" id="modify-post-middle-input" aria-label="bouton ajouter une image" class="modify-post-middle-input" @change="handleFileModifyUpload">
+                        <fontAwesome icon="camera" class="modify-post-middle-btn__icon"/>
+                        <p class="modify-post-middle-btn__title">Modifier l'image</p>
+                    </label>
+                    <div aria-label="bouton ajouter une vidéo youtube" class="modify-post-middle-btn">
+                        <fontAwesome icon="circle-play" class="modify-post-middle-btn__icon"/>
+                        <p class="modify-post-middle-btn__title">Modifier la vidéo via Youtube</p>
                     </div>
-                    <div aria-label="bouton ajouter une vidéo youtube" class="create-post-middle-btn">
-                        <fontAwesome icon="circle-play" class="create-post-middle-btn__icon"/>
-                        <p class="create-post-middle-btn__title">Ajouter une vidéo via Youtube</p>
-                    </div>
-                    <div v-if="this.inputFile.name != null" class="create-post-middle-file">
-                        <fontAwesome @click="delPublicationPic" icon="circle-xmark" class="create-post-middle-btn-file__icon"/>
-                        <p class="create-post-middle-file__text">{{ this.inputFile.name }}</p>
+                    <div v-if="this.inputFile.name != null" class="modify-post-middle-file">
+                        <fontAwesome @click="delModifyPublicationPic" icon="circle-xmark" class="modify-post-middle-btn-file__icon"/>
+                        <p class="modify-post-middle-file__text">{{ this.inputFile.name }}</p>
                     </div>
                 </div>
-                <span class="create-post-line"></span>
-                <div class="create-post-bottom">
-                    <button type="submit" name="publication" id="publication" class="create-post-bottom-btn">Publier</button>
+                <span class="modify-post-line"></span>
+                <div class="modify-post-bottom">
+                    <button type="submit" name="publication" id="publication" class="modify-post-bottom-btn">Publier</button>
                 </div>
             </form>
         </div>
     </div>
-    <div class="main-create-post">
-        <RouterLink to="/profil" class="main-create-post-photoprofil">
-            <img :src="avatar" alt="photo-profil" class="main-create-post-photoprofil__img"/>
-        </RouterLink>
-        <button class="main-create-post-btn" @click="createPublication">
-            <p class="main-create-post-btn__title">Créer une publication...</p>
-        </button>
-    </div>
+    <NoPost v-if="posts.length === 0" />
+    <section v-else class="posts">
+        <Post
+            v-for="post in posts"
+            :key="post.id"
+            :post="post"
+            :user-id="userId"
+            :user-role="userRole"
+            @delete-post="deletePost"
+            @like-post="likePost"
+            @comment-post="commentPost"
+        />
+    </section>
 </template>
 
 <script>
 import { RouterLink } from "vue-router";
-import axios from "axios";
 import router from "../router";
+import axios from "axios";
+import moment from "moment";
+import NoPost from "./NoPost.vue";
+import Post from './Post.vue'
+import { PostsService } from "../services/PostsService";
 
 export default {
-    name: "Feed",
-    data() {
+    name: 'Feed',
+    components: {
+        NoPost,
+        Post
+    },
+        data() {
         return {
-            publication : false,
-            avatar: "",
-            userRole: "",
-            contentPost: "",
+            modifyOrDel: "",
+            publicationPic: true,
+            modification : false,
+            modifyPostContent: "",
             inputFile: {},
+            posts: [],
+            getImageUrl: "",
+            userId: "",
+            userRole: "",
+            getIdPost: ""   
         }
     },
     methods: {
-        handleFileUpload(e){
+        handleFileModifyUpload(e){
             this.inputFile = {
                 name: e.target.files[0].name,
                 data: e.target.files[0]
             };
         },
-        addPublicationPic(){
-            document.querySelector('.create-post-middle-input').click();
-        },
-        delPublicationPic() {
+        delModifyPublicationPic() {
             this.inputFile.name = null;
             this.inputFileName = this.inputFile.name;
         },
-        createPublication(e) {
-            if (!this.publication) {
-                this.publication = true;
-            } else {
-                this.publication = false;
-            }
+        modifyPublication(idPostToModify, contentToModify, imageToModify) {
+            this.modification = !this.modification;
+            this.getIdPost = idPostToModify;
+            this.modifyPostContent = contentToModify;
+            this.getImageUrl = imageToModify;
         },
-        createPost(e){
+        deletePost(postId){
+            PostsService().deletePost(postId)
+                .then(() => {
+                    this.posts = this.posts.filter((post) => post.post._id !== postId)
+                })
+                .catch(error => alert("Erreur : " + error));
+        },
+        dateTime(dateValue) {
+            var date = moment(dateValue);
+            date.locale('fr');
+            return date.format("LLL");
+        },
+        updatePublication(e){
             e.preventDefault();
             let post = {
-                userId: localStorage.getItem("userId"),
-                date: Date.now(),
-                content: this.contentPost
+                content: this.modifyPostContent,
             };
-            
             let formData = new FormData();
             formData.append('post', JSON.stringify(post));
             if (this.inputFile.name != null){ 
                 formData.append('imageUrl', this.inputFile.data, this.inputFile.name);
             }
-            axios.post("http://localhost:3000/api/auth/posts", formData, { headers:{ "Authorization": "Bearer " + localStorage.getItem("token")}})
+            axios.put("http://localhost:3000/api/auth/posts/" + this.getIdPost, formData, { headers:{ "Authorization": "Bearer " + localStorage.getItem("token")}})
                 .then((response) => {
+                    this.getImageUrl = response.data.imageUrl;
+                    this.content = this.modifyPostContent;
+                    this.modification = false;
                     router.go();
                     })
-                .catch(error => alert(error + "Erreur : veuillez ajouter du texte en plus de l'image"));
-        }
+                .catch(error => alert("Erreur : " + error));
+        },
+        likePost(postId){
+            PostsService().likePost(postId)
+                .then(() => {
+                    const postToLike = this.findPost(postId)
+                    if (!postToLike.post.usersLiked.includes(this.userId)) {
+                        postToLike.post.likes += 1;
+                        postToLike.post.usersLiked.push(this.userId);
+                    }
+                })
+                .catch(error => alert(error));
+        },
+        findPost(postId) {
+            return this.posts.find(post => post.post._id === postId)
+        },
+        commentPost({ postId, comment }){
+            PostsService().commentPost(postId, comment)
+                    .then(() => {
+                        const postToComment = this.findPost(postId)
+                        // Renvoyer la structure du nouveau commentaire depuis le back pour l'utiliser ici et mettre à jour la liste des commentaires
+                        postToComment.comments = [comment, ...postToComment.comments]
+                    })
+                    .catch(error => alert(error));
+        },
+        delComment(idPostCommentDel, idComment){
+            axios.delete("http://localhost:3000/api/auth/posts/" + idPostCommentDel + "/comments/" + idComment, { headers:{ "Authorization": "Bearer " + localStorage.getItem("token")}})
+                .then(() => {
+                    router.go();
+                    })
+                .catch(error => alert("Erreur : " + error));
+        },
     },
     mounted() {
+        axios.get("http://localhost:3000/api/auth/posts", { headers:{ "Authorization": "Bearer " + localStorage.getItem("token")}})
+            .then((response) => {
+                var datas = response.data.reverse();
+                console.log({ datas })
+                var currentPath = this.$route.path;
+                if (currentPath == "/profil") {
+                    for (let i=0; i < datas.length; i++) {
+                        var data = datas[i];
+                        if (data.post.userId == localStorage.getItem("userId")) {
+                            this.posts.push(data);
+                        }
+                    }
+                } 
+                else {
+                    this.posts = datas;
+                }
+            })
+            .catch(error => alert("Erreur : " + error));
         axios.get("http://localhost:3000/api/auth/user/" + localStorage.getItem("userId"), { headers:{ "Authorization": "Bearer " + localStorage.getItem("token")}})
             .then((response) => {
-                this.avatar = response.data.avatar;
                 this.userRole = response.data.role;
+                this.userId = localStorage.getItem("userId");
                 })
             .catch(error => alert("Erreur : " + error));
     }
@@ -109,9 +183,8 @@ export default {
 </script>
 
 <style scoped>
-
-/* FENETRE CREER UNE PUBLICATION */
-.create-post{
+/* FENETRE MODIFIER POST */
+.modify-post{
     inset: 0px;
     background-color: #4e516660;
     position: fixed;
@@ -122,48 +195,48 @@ export default {
     justify-content: center;
     align-items: center;    
 }
-.create-post-window{
+.modify-post-window{
     background-color: white;
     border-radius: 20px;
 }
-.create-post-top{
+.modify-post-top{
     display: flex;
     align-items: center;
 }
-.create-post-top__title{
+.modify-post-top__title{
     width: 93%;
     text-align: center;
     font-weight: bold;
 }
-.create-post-top__close{
+.modify-post-top__close{
     height: 25px;
     cursor: pointer;
 }
-.create-post-line{
+.modify-post-line{
     display: block;
     background-color: #d1d2d6;
     height:1.5px;
     width: 100%;
 }
-.create-post-bottom{
+.modify-post-bottom{
     display: flex;
     justify-content: center;
 }
-.create-post-middle{
+.modify-post-middle{
     padding:30px 60px;
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
     max-width: 480px;
 }
-.create-post-middle__text{
+.modify-post-middle__text{
     min-width: 480px;
     min-height:42px;
     max-height:500px;
     border-radius: 8px;
     border: 0.5px solid #4E5166;
 }
-.create-post-middle-btn{
+.modify-post-middle-btn{
     color: black;
     height: 40px;
     width:calc(50% - 15px);
@@ -175,9 +248,6 @@ export default {
     align-items: center;
     cursor: pointer;
 }
-.create-post-middle-btn__icon{
-    width: 15%;
-}
 input[type='file']{
     position: absolute;
     margin-top: 3px;
@@ -186,31 +256,14 @@ input[type='file']{
     width: 1px;
     z-index: -5;
 }
-.create-post-middle-btn:hover{
+.modify-post-middle-btn:hover{
     background-color: #4E5166;
     color: white;
     transition: 0.2s linear;
-}.create-post-middle-btn__title{
+}.modify-post-middle-btn__title{
     font-size: 0.8rem;
 }
-.create-post-middle-file{
-    display: flex;
-    align-items: center;
-    color: black;
-}
-.create-post-middle-btn-file__icon{
-    cursor: pointer;
-    margin-left: 10px;
-    font-size: 0.rem;
-}
-.create-post-middle-btn-file__icon:hover{
-    color:#FD2D01;
-}
-.create-post-middle-file__text{
-    margin: 5px 10px;
-    font-size: 0.8rem;
-}
-.create-post-bottom-btn{
+.modify-post-bottom-btn{
     cursor: pointer;
     padding: 10px 45px;
     font-weight: bold;
@@ -220,79 +273,52 @@ input[type='file']{
     border: none;
     margin: 13px;
 }
-.create-post-bottom-btn:hover{
+.modify-post-middle-btn__icon{
+    width: 15%;
+}
+.modify-post-bottom-btn:hover{
     box-shadow: 1px 1px 10px #FD2D01;
     transition: 0.2s linear;
 }
-
-/* BTN CREER UNE PUBLICATION */
-.main-create-post{
+.modify-post-middle-file{
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    max-width: 570px;
-    margin: auto;
-    border-radius: 30px;
-    border: 0.5px solid #4E5166;
-    padding:25px;
-    box-shadow: 2px 3px 8px #d0d1d6;
+    color: black;
 }
-.main-create-post-photoprofil{
-    border-radius: 100px;
-    height:60px;
-    width: 60px;
-    overflow: hidden;
-}
-.main-create-post-photoprofil__img{
-    height: 100%;
-    width: 100%;
-    object-fit: cover;
-}
-.main-create-post-btn{
-    text-align: left;
+.modify-post-middle-btn-file__icon{
     cursor: pointer;
-    border-radius: 30px;
-    border: 0.5px solid #4E5166;
-    text-decoration: none;
-    color: #4E5166;
-    width: 85%;
+    margin-left: 10px;
+    font-size: 0.rem;
 }
-.main-create-post-btn:hover{
-    background-color: #4E5166;
-    color: white;
-    transition: 0.2s linear;
+.modify-post-middle-btn-file__icon:hover{
+    color:#FD2D01;
 }
-.main-create-post-btn__title{
-    margin-left: 20px;
+.modify-post-middle-file__text{
+    margin: 5px 10px;
+    font-size: 0.8rem;
 }
 
-/* MOBILE */
-@media screen and (max-width: 610px) {
-    .create-post-middle__text{
-        min-width: calc(100% - 6px);
-        max-width: calc(100% - 6px);
-        min-height:42px;
-        max-height:500px;
-    }
-    .create-post-top__close{
-        padding-right: 15px; 
-    }
-    .create-post-middle{
-        padding: 30px;
-        width: 70vw;
+/* MOBILE */ 
+@media screen and (max-width: 425px) {
+    /* MODAL MODIFICATION */
+    .modify-post-middle{
         flex-direction: column;
+        align-items: center;
+        width: 70vw;
+        padding: 30px;
     }
-    .create-post-middle-btn{
-        width: 100%;
+    .modify-post-middle-btn{
+        width: 70vw;
         margin-top:15px;
     }
-
-    /* BTN CREER UNE PUBLICATION */
-    .main-create-post{
-        width: 78vw;
+    .modify-post-middle__text{
+        min-width: calc(100% - 6px);
+        max-width: calc(100% - 6px);
+        min-height: 42px;
+        max-height: 500px;
     }
-    .main-create-post-btn{
-        width: 72%;
+    .modify-post-top__close{
+        padding-right: 15px;    
     }
 }
 </style>
