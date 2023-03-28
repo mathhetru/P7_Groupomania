@@ -139,9 +139,14 @@ export default {
         commentPost({ postId, comment }){
             PostsService().commentPost(postId, comment)
                     .then(() => {
-                        const postToComment = this.findPost(postId)
-                        // Renvoyer la structure du nouveau commentaire depuis le back pour l'utiliser ici et mettre à jour la liste des commentaires
-                        postToComment.comments = [comment, ...postToComment.comments]
+                        const postToComment = this.findPost(postId);
+                        comment = postToComment.commentContent;
+                        if (postToComment.commentUser == this.userId) {
+                            
+                            console.log("otot")
+                        }
+
+                        // postToComment.comments = [comment, ...postToComment.comments];
                     })
                     .catch(error => alert(error));
         },
@@ -157,7 +162,6 @@ export default {
         axios.get("http://localhost:3000/api/auth/posts", { headers:{ "Authorization": "Bearer " + localStorage.getItem("token")}})
             .then((response) => {
                 var datas = response.data.reverse();
-                console.log({ datas })
                 var currentPath = this.$route.path;
                 if (currentPath == "/profil") {
                     for (let i=0; i < datas.length; i++) {

@@ -121,7 +121,6 @@ export default {
             if (!this.comment) {
                 return alert("Vous ne pouvez pas envoyer de commentaire vide, veuillez remplir le champ.")
             }
-
             this.$emit('comment-post', { postId: this.post.post._id, comment: this.comment });
         },
         deleteComment(idComment){

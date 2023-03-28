@@ -144,13 +144,12 @@ exports.commentedPost = (req, res, next) => {
       commentUser: req.auth.userId,
       commentContent: req.body.comment
     };
-    console.log(commentObject);
     Post.updateOne(
       { _id: req.params.id },
       { $inc: { commentNumber: 1 }, 
         $push: { comments: commentObject }}
     )
-    .then(() => res.status(200).json({ message: "Vous avez commenté la publication ! :)" }))
+    .then(() => res.status(200).json({ message: "Vous avez commenté la publication ! :)", comment: commentObject }))
     .catch((error) => res.status(400).json({ error }));
   })
   .catch((error) => res.status(400).json({error: error}));
